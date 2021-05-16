@@ -1,0 +1,11 @@
+<ng-container>
+  <div *ngIf="showResults">
+    <!-- <mat-paginator (page)="handlePageEvent($event)" [length]="length" [pageSize]="pageSize"
+      [showFirstLastButtons]="showFirstLastButtons" [pageSizeOptions]="pageSizeOptions" [pageIndex]="pageIndex">
+    </mat-paginator> -->
+    
+    <div *ngFor="let item of filteredResults;">
+      <app-result-card [card]="item"></app-result-card>
+    </div>
+  </div>
+</ng-container>

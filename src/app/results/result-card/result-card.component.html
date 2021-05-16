@@ -1,0 +1,42 @@
+<ng-container>
+  <mat-card class="custom-mat-card">
+    <mat-card-header>
+      <mat-card-title>{{card.Center.name}}</mat-card-title>
+      <mat-card-subtitle>
+        <div>
+          <span>
+            <fa-icon icon="map-marker"></fa-icon> &nbsp;{{card.Center.block_name}}&nbsp;,&nbsp;{{card.Center.pincode}}
+          </span>
+          <br />
+
+        </div>
+
+      </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content class="mat-card-header-text">
+      <div>
+        <span class="ant-tag sc-ikXwZx hbMaJM">
+          <span class="sc-kEqYlL BHClc">{{ageGroup}}+</span>
+        </span>
+        
+        &nbsp; &nbsp;<span class="sc-kEqYlL cJWlqu" style="color: green;">{{slots_count}}&nbsp;Slot(s) available</span> &nbsp;        
+      </div>
+
+      <br />
+
+      <div>
+        <span>Vaccine : {{vaccine_type}}({{fee_type}})</span>
+      </div>
+
+      <br />
+
+      <div dir="col" class="sc-jrsJCI sc-WZYaI kbFzTU WANCN">
+        <span color="white-color" class="sc-kEqYlL sc-uxeQQ kSRyvT dWdPpq">
+          <span color="white-color" class="sc-kEqYlL sc-biJoGX lkkDQX fIJvfn">Book on CoWIN</span>
+        </span>
+
+      </div>
+
+    </mat-card-content>
+  </mat-card>
+</ng-container>

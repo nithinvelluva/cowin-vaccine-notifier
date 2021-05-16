@@ -1,0 +1,126 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Cowin Notifier
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Set your preferences</mat-card-title>
+      <mat-card-subtitle>
+        Available slots will be notified based on your preferences.
+      </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <br />
+      <div>
+        <mat-radio-group [(ngModel)]="preferences.searchCriteria" aria-label="Select an option" name="criteriaType"
+          (change)="criteriaTypeChange()">
+          <mat-radio-button [value]="1">Search By PIN</mat-radio-button>
+          <mat-radio-button [value]="2">Search By District</mat-radio-button>
+        </mat-radio-group>
+      </div>
+      <br />
+      <div *ngIf="preferences.searchCriteria == 2">
+        <mat-form-field>
+          <mat-label>State</mat-label>
+          <mat-select [(ngModel)]="preferences.stateId" name="state" (selectionChange)="onStateChange($event)">
+            <mat-option [value]="">-- Please Select --</mat-option>
+            <mat-option *ngFor="let item of states" [value]="item.state_id">
+              {{item.state_name}}
+            </mat-option>
+          </mat-select>
+
+        </mat-form-field>
+
+        <br />
+
+        <mat-form-field>
+          <mat-label>District</mat-label>
+          <mat-select [(ngModel)]="preferences.districtId" name="district">
+            <mat-option [value]="">-- Please Select --</mat-option>
+            <mat-option *ngFor="let item of districts" [value]="item.district_id">
+              {{item.district_name}}
+            </mat-option>
+          </mat-select>
+
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="preferences.searchCriteria == 1">
+        <mat-form-field class="example-full-width">
+          <mat-label>PIN</mat-label>
+          <input matInput placeholder="Enter your PIN" [(ngModel)]="preferences.pinNumber" name="PIN">
+        </mat-form-field>
+      </div>
+      <br />
+      <div>
+        <button mat-raised-button color="primary" (click)="getSchedule($event)" [disabled]="actionDisabled()">Get
+          vaccinated !!!</button>
+      </div>
+
+      <br />
+      <div *ngIf="searchCompleted" #filterSection>
+        <!-- <mat-radio-group [(ngModel)]="preferences.ageGroup" aria-label="Select an age group" name="ageGroup"
+          (change)="ageGroupFilterChage($event)">
+          <mat-radio-button [value]="1">All Age</mat-radio-button>
+          <mat-radio-button [value]="18">Age 18-44</mat-radio-button>
+          <mat-radio-button [value]="45">Age 45+</mat-radio-button>
+        </mat-radio-group> -->
+
+        <mat-button-toggle-group [(value)]="filterGroupValue" #group="matButtonToggleGroup" multiple=true color="primary">
+          <mat-button-toggle *ngFor="let item of toggleOptions;" (change)="filterGroupSelectionChanged($event)"
+            [value]="item">{{item.Option}}</mat-button-toggle>
+        </mat-button-toggle-group>
+
+        <br/>
+
+        <mat-button-toggle-group [(value)]="filterFeeGroupValue" #group="matButtonToggleGroup" multiple=true color="primary">
+          <mat-button-toggle *ngFor="let item of feeOptions;" (change)="filterFeeGroupValueSelectionChanged($event)"
+            [value]="item">{{item.Option}}</mat-button-toggle>
+        </mat-button-toggle-group>
+        <!-- <div class="example-selected-value">Selected value: {{group.value}}</div> -->
+      </div>
+
+    </mat-card-content>
+  </mat-card>
+
+  <br />
+
+  <ng-container *ngIf="searchCompleted">
+    <ng-container *ngIf="availableCenterSessions.length > 0">
+      <app-result-section [results]="availableCenterSessions"></app-result-section>
+      <br />
+    </ng-container>
+    <ng-container *ngIf="availableCenterSessions.length == 0">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>
+            <span style="color: #f5222d;">
+              <fa-icon icon="exclamation"></fa-icon>
+              &nbsp;No Slots available in this area
+            </span>
+          </mat-card-title>
+          <mat-card-subtitle>
+
+          </mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+          <span>
+            <mat-slide-toggle [(ngModel)]="preferences.subscribe" #slider name="SubscribeBtn"
+              [disabled]="actionDisabled()" (change)="getVaccineSchedule($event)">
+              {{ slider.checked ? 'Unsubscribe' : 'Subscribe to notifications' }}
+            </mat-slide-toggle>
+          </span>
+          <br />
+          <div style="color: dodgerblue;">You will be notified when a slot opens up</div>
+        </mat-card-content>
+      </mat-card>
+      <br />
+    </ng-container>
+  </ng-container>
+</ion-content>

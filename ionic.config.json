@@ -1,0 +1,7 @@
+{
+  "name": "cowin-vaccine-notifier",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

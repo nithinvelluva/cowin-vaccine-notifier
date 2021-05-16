@@ -1,0 +1,38 @@
+.ant-tag{
+    background: #fafafa;
+    border: 1px solid #d9d9d9;
+    
+    color: #333;
+}
+
+.WpJAE {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    background-color: white;
+    box-shadow: rgb(0 0 0 / 20%) 0px 3px 6px;
+    border-radius: 8px;
+    margin-bottom: 1em;
+    cursor: pointer;
+}
+
+.WANCN {
+    background-color: rgb(139, 194, 73);
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.kbFzTU {
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    flex-direction: column;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+}
+
+.custom-mat-card{
+    margin: 8px;
+    box-shadow: 2px 2px 1px -1px rgb(0 0 0 / 20%), 2px 2px 1px 1px rgb(0 0 0 / 14%), 2px 2px 3px 0px rgb(0 0 0 / 12%);
+}
