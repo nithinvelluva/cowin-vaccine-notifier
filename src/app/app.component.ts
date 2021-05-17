@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { Plugins } from '@capacitor/core';
-const { SplashScreen } = Plugins;
+// import { Plugins } from '@capacitor/core';
+// const { SplashScreen } = Plugins;
 
 @Component({
   selector: 'app-root',
@@ -9,9 +9,9 @@ const { SplashScreen } = Plugins;
 })
 export class AppComponent {
   constructor() {
-    SplashScreen.show({
+    /* SplashScreen.show({
       showDuration: 2000,
       autoHide: true
-    });
+    }); */
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+/* import { Injectable } from '@angular/core';
 
 import { Plugins } from "@capacitor/core";
 const { Storage } = Plugins;
@@ -24,4 +24,4 @@ export class StorageService {
           key: key
         });
       }
-}
+} */

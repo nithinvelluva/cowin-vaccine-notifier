@@ -1,11 +1,37 @@
-<ng-container>
-  <div *ngIf="showResults">
-    <!-- <mat-paginator (page)="handlePageEvent($event)" [length]="length" [pageSize]="pageSize"
-      [showFirstLastButtons]="showFirstLastButtons" [pageSizeOptions]="pageSizeOptions" [pageIndex]="pageIndex">
-    </mat-paginator> -->
-    
-    <div *ngFor="let item of filteredResults;">
-      <app-result-card [card]="item"></app-result-card>
-    </div>
+<ng-container *ngIf="showResults">
+  <div>
+    <mat-accordion>
+      <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false"
+        *ngFor="let weeklyResult of weeklyResults;">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <strong>{{weeklyResult.sessionDate}}</strong>
+          </mat-panel-title>
+          <mat-panel-description>
+            <div>
+              <span class="sc-kEqYlL cJWlqu" style="color: green;">
+                <fa-icon icon="hospital"></fa-icon>&nbsp;{{weeklyResult.filteredResults.length}}&nbsp;Center(s)
+              </span>
+            </div>
+          </mat-panel-description>
+        </mat-expansion-panel-header>        
+        <div>
+          <span class="sc-kEqYlL cJWlqu" style="color: green;">
+            <fa-icon icon="syringe"></fa-icon>&nbsp;{{weeklyResult.totalSlots}}&nbsp;Slot(s)
+          </span>
+          <br />
+          <span class="sc-kEqYlL cJWlqu" style="color: green;">
+            <fa-icon icon="syringe"></fa-icon>Dose 1 :&nbsp;{{weeklyResult.totalSlotsDose1}}&nbsp;Slot(s)
+          </span>
+          &nbsp;&nbsp;
+          <span class="sc-kEqYlL cJWlqu" style="color: green;">
+            <fa-icon icon="syringe"></fa-icon>Dose 2 :&nbsp;{{weeklyResult.totalSlotsDose2}}&nbsp;Slot(s)
+          </span>
+        </div>
+        <div *ngFor="let item of weeklyResult.filteredResults;">
+          <app-result-card [card]="item"></app-result-card>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
   </div>
 </ng-container>

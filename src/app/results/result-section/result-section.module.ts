@@ -20,6 +20,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 @NgModule({
   imports: [
@@ -38,7 +39,8 @@ import { MatSortModule } from '@angular/material/sort';
     MatCardModule,
     MatSlideToggleModule,
     MatSortModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatExpansionModule
   ],
   declarations: [ResultSectionPage,ResultCardComponent]
 })

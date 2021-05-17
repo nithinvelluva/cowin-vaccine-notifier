@@ -20,7 +20,7 @@ export class ResultCardComponent implements OnInit {
 
   ngOnChanges(){
     this.fee_type = this.card.Center.fee_type;
-    var currentDateSession = this.card.Sessions.filter(x => x.date == this.getCurrentDate());
+    var currentDateSession = this.card.Sessions;//.filter(x => x.date == this.getCurrentDate());
     if (currentDateSession && currentDateSession.length > 0) {
       this.vaccine_type = currentDateSession[0].vaccine;
       this.ageGroup = currentDateSession[0].min_age_limit;      
@@ -28,12 +28,12 @@ export class ResultCardComponent implements OnInit {
     }
   }
 
-  getCurrentDate() {
+  /* getCurrentDate() {
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
     var yyyy = today.getFullYear();
     return dd + '-' + mm + '-' + yyyy;
   }
-
+ */
 }

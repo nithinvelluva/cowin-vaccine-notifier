@@ -2,10 +2,11 @@ import { Component } from '@angular/core';
 import { CowinService } from '../services/cowin.service';
 import { interval, Subscription } from 'rxjs';
 import { Session, AvailableCenterSessions, FilterGroup } from '../models/vaccinesessions';
-import { StorageService } from "../services/storage/storage.service";
-import { Plugins } from '@capacitor/core';
-const { LocalNotifications } = Plugins;
-//import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+// import { StorageService } from "../services/storage/storage.service";
+// import { Plugins } from '@capacitor/core';
+//const { LocalNotifications } = Plugins;
+
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 
 @Component({
   selector: 'app-home',
@@ -36,8 +37,9 @@ export class HomePage {
   feeOptions: Array<FilterGroup> = [];
 
   constructor(private cowinService: CowinService
-    //, private localNotifications: LocalNotifications
-    , private storageService: StorageService) { }
+    , private localNotifications: LocalNotifications
+    //, private storageService: StorageService
+    ) { }
 
   buildFilterOptions() {
     let id = 0;
@@ -55,9 +57,9 @@ export class HomePage {
   }
   ngOnInit(): void {
     this.buildFilterOptions();
-    this.storageService.get(this.preferencesKey).then(async (data: any) => {
-      console.log(data);
-      this.preferences = data;
+    //this.storageService.get(this.preferencesKey).then(async (data: any) => {
+      //console.log(data);
+      //this.preferences = data;
       this.cowinService.GetStates().subscribe((data: any) => {
         this.states = data.states;
         if (this.preferences.districtId) {
@@ -66,7 +68,7 @@ export class HomePage {
       });
       this.getVaccineSchedule(null);
 
-      const notifs = await LocalNotifications.schedule({
+      /* const notifs = await LocalNotifications.schedule({
         notifications: [
           {
             title: "Title",
@@ -79,8 +81,8 @@ export class HomePage {
             extra: null
           }
         ]
-      });
-    });
+      }); */
+    //});
   }
 
   onStateChange(e) {
@@ -125,13 +127,13 @@ export class HomePage {
         this.parseSessionData();
         console.log('sessions available', this.availableCenterSessions);
         if (this.availableCenterSessions && this.availableCenterSessions.length > 0 && this.preferences.subscribe) {
-          alert('found !!');
-          /* this.localNotifications.schedule({
+          //alert('found !!');
+          this.localNotifications.schedule({
             id: ++this.not_id,
             text: 'Vaccines slot found !! Book your slots in COWIN',
             sound: 'file://sound.mp3',
             data: { secret: 'key_data' }
-          }); */
+          });
         }
       }
       this.searchCompleted = true;
@@ -146,12 +148,12 @@ export class HomePage {
         this.parseSessionData();
         if (this.availableCenterSessions && this.availableCenterSessions.length > 0 && this.preferences.subscribe) {
           alert('found !!');
-          /* this.localNotifications.schedule({
+          this.localNotifications.schedule({
             id: ++this.not_id,
             text: 'Vaccines slot found !! Book your slots in COWIN',
             sound: 'file://sound.mp3',
             data: { secret: 'key_data' }
-          }); */
+          });
         }
       }
     });
@@ -177,7 +179,7 @@ export class HomePage {
     }
   }
   savePreferences() {
-    this.storageService.set(this.preferencesKey, this.preferences);
+    //this.storageService.set(this.preferencesKey, this.preferences);
   }
   actionDisabled() {
     return this.preferences.searchCriteria == 1 ? !this.preferences.pinNumber : !(this.preferences.stateId && this.preferences.districtId);

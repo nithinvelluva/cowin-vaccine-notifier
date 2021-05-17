@@ -39,8 +39,8 @@
 
 @include mat-core();
 
-$app-primary: mat-palette($mat-indigo);
-$app-accent:  mat-palette($mat-pink, A200, A100, A400);
+$app-primary: mat-palette($mat-pink);
+$app-accent:  mat-palette($mat-gray, A200, A100, A400);
 
 $app-theme: mat-light-theme($app-primary, $app-accent);
 
@@ -74,4 +74,8 @@ $app-theme: mat-light-theme($app-primary, $app-accent);
       text-align: center;
       flex: 1 1 100%;
   }
+}
+
+.mat-form-field + .mat-form-field {
+  margin-left: 8px;
 }
