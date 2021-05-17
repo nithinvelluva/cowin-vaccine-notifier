@@ -36,7 +36,7 @@ export class ResultSectionPage implements OnInit {
       for (let date of this.weekDates) {
         for (let item of this.results) {
           var sessions = item.Sessions.filter(x => x.date == date);
-          if (sessions && sessions.length > 0) {
+          if (sessions && sessions.length == 1) {
             var results = [];
             results.push(
               <AvailableCenterSessions>{
@@ -63,6 +63,37 @@ export class ResultSectionPage implements OnInit {
               dayItem.totalSlotsDose1 = this.findTotalSlotCount(dayItem.filteredResults, this.totalavailable_capacity_dose1);
               dayItem.totalSlotsDose2 = this.findTotalSlotCount(dayItem.filteredResults, this.totalavailable_capacity_dose2);
               dayItem.totalSlots = dayItem.totalSlotsDose1 + dayItem.totalSlotsDose2;
+            }
+          }
+          else if (sessions && sessions.length > 1) {
+            for (let s of sessions) {
+              var results = [];
+              results.push(
+                <AvailableCenterSessions>{
+                  Center: item.Center,
+                  Sessions: [s]
+                }
+              );
+              var dayItem = this.weeklyResults.find(x => this.checkDateSlotsAvailable(x, date));
+              if (!dayItem) {
+                var totalSlotsDose1 = this.findTotalSlotCount(results, this.totalavailable_capacity_dose1);
+                var totalSlotsDose2 = this.findTotalSlotCount(results, this.totalavailable_capacity_dose2);
+                this.weeklyResults.push(
+                  {
+                    sessionDate: date,
+                    filteredResults: results,
+                    totalSlots: totalSlotsDose1 + totalSlotsDose2,
+                    totalSlotsDose1: totalSlotsDose1,
+                    totalSlotsDose2: totalSlotsDose2
+                  }
+                );
+              }
+              else {
+                dayItem.filteredResults = [...dayItem.filteredResults, ...results];
+                dayItem.totalSlotsDose1 = this.findTotalSlotCount(dayItem.filteredResults, this.totalavailable_capacity_dose1);
+                dayItem.totalSlotsDose2 = this.findTotalSlotCount(dayItem.filteredResults, this.totalavailable_capacity_dose2);
+                dayItem.totalSlots = dayItem.totalSlotsDose1 + dayItem.totalSlotsDose2;
+              }
             }
           }
         }
