@@ -4,8 +4,8 @@
       <mat-card-title>{{card.Center.name}}</mat-card-title>
       <mat-card-subtitle>
         <div>
-          <span>
-            <fa-icon icon="map-marker"></fa-icon> &nbsp;{{card.Center.block_name}}&nbsp;,&nbsp;{{card.Center.pincode}}
+          <span class="text-wrap">
+            <fa-icon icon="map-marker"></fa-icon> &nbsp;{{card.Center.address}}&nbsp;,&nbsp;{{card.Center.pincode}}
           </span>
           <br />
 
@@ -19,8 +19,8 @@
           <span class="sc-kEqYlL BHClc">{{ageGroup}}+</span>
         </span>
 
-        &nbsp; &nbsp;<span class="sc-kEqYlL cJWlqu" style="color: green;">
-          {{slots_count}}&nbsp;Slot(s) available
+        &nbsp; &nbsp;<span class="sc-kEqYlL cJWlqu" [ngStyle]="{'color': slots_count > 0 ? 'green' : 'orange' }">
+          {{slots_count > 0 ? slots_count : 'No'}}&nbsp;Slot(s) available
         </span> &nbsp;
       </div>
 
@@ -30,9 +30,9 @@
         <span>Vaccine : {{vaccine_type}}({{fee_type}})</span>
       </div>
 
-      <br />
+      <br *ngIf="slots_count > 0"/>
 
-      <div dir="col" class="sc-jrsJCI sc-WZYaI kbFzTU WANCN">
+      <div *ngIf="slots_count > 0" dir="col" class="sc-jrsJCI sc-WZYaI kbFzTU WANCN" (click)="openWithInAppBrowser($event)">
         <span color="white-color" class="sc-kEqYlL sc-uxeQQ kSRyvT dWdPpq">
           <span color="white-color" class="sc-kEqYlL sc-biJoGX lkkDQX fIJvfn">Book on CoWIN</span>
         </span>

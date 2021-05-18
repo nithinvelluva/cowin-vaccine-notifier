@@ -25,7 +25,7 @@
       </div>
       <br />
       <div *ngIf="preferences.searchCriteria == 2">
-        <mat-form-field>
+        <mat-form-field class="example-full-width">
           <mat-label>State</mat-label>
           <mat-select [(ngModel)]="preferences.stateId" name="state" (selectionChange)="onStateChange($event)">
             <mat-option [value]="">-- Please Select --</mat-option>
@@ -38,7 +38,7 @@
 
         <br />
 
-        <mat-form-field>
+        <mat-form-field class="example-full-width">
           <mat-label>District</mat-label>
           <mat-select [(ngModel)]="preferences.districtId" name="district">
             <mat-option [value]="">-- Please Select --</mat-option>
@@ -51,38 +51,39 @@
       </div>
 
       <div *ngIf="preferences.searchCriteria == 1">
-        <mat-form-field class="example-full-width">
+        <mat-form-field class="example-half-width">
           <mat-label>PIN</mat-label>
-          <input matInput placeholder="Enter your PIN" [(ngModel)]="preferences.pinNumber" name="PIN">
+          <input matInput placeholder="Enter your PIN" [(ngModel)]="preferences.pinNumber" name="PIN" type="number">
         </mat-form-field>
       </div>
       <br />
       <div>
         <button mat-raised-button color="primary" (click)="getSchedule($event)" [disabled]="actionDisabled()">Get
-          vaccinated !!!</button>
+          vaccinated &nbsp;<fa-icon icon="syringe"></fa-icon></button>
       </div>
-
       <br />
-      <div *ngIf="searchCompleted" #filterSection>
-        <!-- <mat-radio-group [(ngModel)]="preferences.ageGroup" aria-label="Select an age group" name="ageGroup"
-          (change)="ageGroupFilterChage($event)">
-          <mat-radio-button [value]="1">All Age</mat-radio-button>
-          <mat-radio-button [value]="18">Age 18-44</mat-radio-button>
-          <mat-radio-button [value]="45">Age 45+</mat-radio-button>
-        </mat-radio-group> -->
-
-        <mat-button-toggle-group [(value)]="filterGroupValue" #group="matButtonToggleGroup" multiple=true color="primary">
-          <mat-button-toggle *ngFor="let item of toggleOptions;" (change)="filterGroupSelectionChanged($event)"
-            [value]="item">{{item.Option}}</mat-button-toggle>
-        </mat-button-toggle-group>
-
-        <br/>
-
-        <mat-button-toggle-group [(value)]="filterFeeGroupValue" #group="matButtonToggleGroup" multiple=true color="primary">
-          <mat-button-toggle *ngFor="let item of feeOptions;" (change)="filterFeeGroupValueSelectionChanged($event)"
-            [value]="item">{{item.Option}}</mat-button-toggle>
-        </mat-button-toggle-group>
-        <!-- <div class="example-selected-value">Selected value: {{group.value}}</div> -->
+      <div *ngIf="searchCompleted && hasResults" #filterSection>
+        <div>
+          <mat-button-toggle-group [(value)]="filterGroupValue" #group="matButtonToggleGroup" multiple=true
+            color="primary">
+            <mat-button-toggle *ngFor="let item of toggleOptions;" (change)="filterGroupSelectionChanged($event)"
+              [value]="item" class="reduced-line-height">{{item.Option}}</mat-button-toggle>
+          </mat-button-toggle-group>
+          &nbsp;&nbsp;
+          <mat-button-toggle-group [(value)]="filterFeeGroupValue" #group="matButtonToggleGroup" multiple=true
+            color="primary">
+            <mat-button-toggle *ngFor="let item of feeOptions;" (change)="filterFeeGroupValueSelectionChanged($event)"
+              [value]="item">{{item.Option}}</mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+        <br />
+        <div>
+          <mat-button-toggle-group [(value)]="filterVaccineGroupValue" #group="matButtonToggleGroup" multiple=true
+            color="primary">
+            <mat-button-toggle *ngFor="let item of vaccineOptions;"
+              (change)="filterGroupVaccineSelectionChanged($event)" [value]="item">{{item.Option}}</mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
       </div>
 
     </mat-card-content>
@@ -99,25 +100,26 @@
       <mat-card>
         <mat-card-header>
           <mat-card-title>
+
+          </mat-card-title>
+          <mat-card-subtitle>
             <span style="color: #f5222d;">
               <fa-icon icon="exclamation"></fa-icon>
               &nbsp;No Slots available in this area
             </span>
-          </mat-card-title>
-          <mat-card-subtitle>
-
           </mat-card-subtitle>
         </mat-card-header>
 
         <mat-card-content>
           <span>
             <mat-slide-toggle [(ngModel)]="preferences.subscribe" #slider name="SubscribeBtn"
-              [disabled]="actionDisabled()" (change)="getVaccineSchedule($event)">
-              {{ slider.checked ? 'Unsubscribe' : 'Subscribe to notifications' }}
+              [disabled]="actionDisabled()" (change)="subscribeToNotification($event)">
+              <!-- {{ slider.checked ? 'Unsubscribe' : 'Subscribe to notifications' }} -->
+              Subscribe to notifications
             </mat-slide-toggle>
           </span>
           <br />
-          <div style="color: dodgerblue;">You will be notified when a slot opens up</div>
+          <!-- <div style="color: dodgerblue;">You will be notified when a slot opens up</div> -->
         </mat-card-content>
       </mat-card>
       <br />

@@ -35,6 +35,10 @@
   margin-left:-28px !important;
 }
 
+.mat-button-toggle-appearance-standard .mat-button-toggle-label-content{
+  line-height: 35px !important;
+}
+
 @import '~@angular/material/theming';
 
 @include mat-core();
@@ -56,14 +60,14 @@ $app-theme: mat-light-theme($app-primary, $app-accent);
   .mat-button-toggle-checked {
     background-color: mat-color($accent);
     color: mat-color($accent, default-contrast);
-  }
+  }  
 }
 
 // Include the mixin
 @include mix-app-theme($app-theme);
 
 
-.mat-button-toggle-label {
+/* .mat-button-toggle-label {
   flex: 1 1 100%;
   box-sizing: border-box;
   align-items: center;
@@ -74,8 +78,14 @@ $app-theme: mat-light-theme($app-primary, $app-accent);
       text-align: center;
       flex: 1 1 100%;
   }
-}
+} */
 
 .mat-form-field + .mat-form-field {
   margin-left: 8px;
+}
+.example-half-width{
+  width: 50%;
+}
+.example-full-width{
+  width: 90%;
 }

@@ -13,17 +13,30 @@ import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontaweso
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { far } from '@fortawesome/free-regular-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons'
+
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+import { SplashScreen } from '@ionic-native/splash-screen/ngx';
+import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+
+import { SQLite, SQLiteObject } from '@ionic-native/sqlite/ngx';
+import { NativeStorage } from '@ionic-native/native-storage/ngx';
 
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, BrowserAnimationsModule,HttpClientModule,FontAwesomeModule],
-  providers: [LocalNotifications,{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, BrowserAnimationsModule, HttpClientModule, FontAwesomeModule],
+  providers: [LocalNotifications,
+    NativeStorage,
+    SplashScreen,
+    StatusBar,
+    InAppBrowser,    
+    SQLite,
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
 })
 export class AppModule {
-  constructor(library: FaIconLibrary) { 
-		library.addIconPacks(fas, fab, far);
-	}
+  constructor(library: FaIconLibrary) {
+    library.addIconPacks(fas, fab, far);
+  }
 }

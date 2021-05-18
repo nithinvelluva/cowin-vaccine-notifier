@@ -2,16 +2,19 @@ import { Component } from '@angular/core';
 import { CowinService } from '../services/cowin.service';
 import { interval, Subscription } from 'rxjs';
 import { Session, AvailableCenterSessions, FilterGroup } from '../models/vaccinesessions';
-// import { StorageService } from "../services/storage/storage.service";
-// import { Plugins } from '@capacitor/core';
-//const { LocalNotifications } = Plugins;
 
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
+import { StorageLocalDBService } from '../services/storage/storage.localdb';
+import { SQLite, SQLiteObject } from '@ionic-native/sqlite/ngx';
+//import { StorageService } from '../services/storage/storage.service';
+//import { NativeStorage } from '@ionic-native/native-storage/ngx';
 
 @Component({
   selector: 'app-home',
-  templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
+  templateUrl: 'home.page.html',  
+  styleUrls: ['home.page.scss']
 })
 export class HomePage {
   states: any[];
@@ -33,55 +36,50 @@ export class HomePage {
 
   filterFeeGroupValue: Array<FilterGroup> = [];
   filterGroupValue: Array<FilterGroup> = [];
+  filterVaccineGroupValue: Array<FilterGroup> = [];
   toggleOptions: Array<FilterGroup> = [];
   feeOptions: Array<FilterGroup> = [];
+  vaccineOptions: Array<FilterGroup> = [];
+
+  hasResults: boolean;
 
   constructor(private cowinService: CowinService
     , private localNotifications: LocalNotifications
     //, private storageService: StorageService
-    ) { }
+    //,private storage: NativeStorage
+    , private localDBService: StorageLocalDBService
+    , private snackBar: MatSnackBar
+  ) { }
 
   buildFilterOptions() {
-    let id = 0;
     let ageGroups: Array<FilterGroup> = [<FilterGroup>{ Option: "18-44", Key: 'min_age_limit', Value: '18' },
     <FilterGroup>{ Option: "45+", Key: 'min_age_limit', Value: '45' }];
 
     let vaccineGroups: Array<FilterGroup> = [<FilterGroup>{ Option: "COVISHIELD", Key: 'vaccine', Value: 'COVISHIELD' },
-    <FilterGroup>{ Option: "COVAXIN", Key: 'vaccine', Value: 'COVAXIN' }];
+    <FilterGroup>{ Option: "COVAXIN", Key: 'vaccine', Value: 'COVAXIN' },
+    <FilterGroup>{ Option: "Sputnik V", Key: 'vaccine', Value: 'SputnikV' }];
 
     let feeTypeGroups: Array<FilterGroup> = [<FilterGroup>{ Option: "Free", Key: 'fee_type', Value: 'Free' },
     <FilterGroup>{ Option: "Paid", Key: 'fee_type', Value: 'Paid' }];
 
-    this.toggleOptions = [...this.toggleOptions, ...ageGroups, ...vaccineGroups];
+    this.toggleOptions = [...this.toggleOptions, ...ageGroups];
     this.feeOptions = [...this.feeOptions, ...feeTypeGroups];
+    this.vaccineOptions = [...this.vaccineOptions, ...vaccineGroups];
+
+    this.localDBService.hai();
   }
   ngOnInit(): void {
     this.buildFilterOptions();
     //this.storageService.get(this.preferencesKey).then(async (data: any) => {
-      //console.log(data);
-      //this.preferences = data;
-      this.cowinService.GetStates().subscribe((data: any) => {
-        this.states = data.states;
-        if (this.preferences.districtId) {
-          this.getDistricts(this.preferences.stateId);
-        }
-      });
-      this.getVaccineSchedule(null);
-
-      /* const notifs = await LocalNotifications.schedule({
-        notifications: [
-          {
-            title: "Title",
-            body: "Body",
-            id: 1,
-            schedule: { at: new Date(Date.now() + 1000 * 5) },
-            sound: null,
-            attachments: null,
-            actionTypeId: "",
-            extra: null
-          }
-        ]
-      }); */
+    //console.log(data);
+    //this.preferences = data;
+    this.cowinService.GetStates().subscribe((data: any) => {
+      this.states = data.states;
+      if (this.preferences.districtId) {
+        this.getDistricts(this.preferences.stateId);
+      }
+    });
+    this.getVaccineSchedule(null);
     //});
   }
 
@@ -97,17 +95,18 @@ export class HomePage {
     this.availableCenterSessions = [];
     if (this.allCenterSessions) {
       var feeFilter = this.filterFeeGroupValue && this.filterFeeGroupValue.length > 0;
-
-      var filterParams = this.filterGroupValue && this.filterGroupValue.length > 0;
       var centers = feeFilter ? this.allCenterSessions.filter(x => this.constructFeeFilterParams(x, 0, this.allCenterSessions))
-      : this.allCenterSessions;
+        : this.allCenterSessions;
 
+      /* var filterParams = (this.filterGroupValue && this.filterGroupValue.length > 0)
+        || (this.filterVaccineGroupValue && this.filterVaccineGroupValue.length > 0); */
       centers.forEach((element, i, arr) => {
         var openSessions: Session[] = [];
         var allSessions: Session[] = element.sessions;
-        openSessions = filterParams ?
+        /* openSessions = filterParams ?
           [...openSessions, ...allSessions.filter(x => this.constructFilterParams(x, i, allSessions))] :
-          [...openSessions, ...allSessions.filter(x => x.available_capacity > 0)];
+          [...openSessions, ...allSessions.filter(x => x.available_capacity > 0)]; */
+        openSessions = [...openSessions, ...allSessions.filter(x => this.constructFilterParams(x, i, allSessions))];
         if (openSessions && openSessions.length > 0) {
           this.availableCenterSessions.push(
             <AvailableCenterSessions>{
@@ -127,7 +126,6 @@ export class HomePage {
         this.parseSessionData();
         console.log('sessions available', this.availableCenterSessions);
         if (this.availableCenterSessions && this.availableCenterSessions.length > 0 && this.preferences.subscribe) {
-          //alert('found !!');
           this.localNotifications.schedule({
             id: ++this.not_id,
             text: 'Vaccines slot found !! Book your slots in COWIN',
@@ -136,6 +134,7 @@ export class HomePage {
           });
         }
       }
+      this.hasResults = data && data.centers && data.centers.length > 0;
       this.searchCompleted = true;
     });
   }
@@ -156,10 +155,19 @@ export class HomePage {
           });
         }
       }
+      this.hasResults = data && data.centers && data.centers.length > 0;
+      this.searchCompleted = true;
     });
-    this.searchCompleted = true;
   }
 
+  subscribeToNotification(e) {
+    if (this.preferences.subscribe) {
+      let snackBarRef = this.snackBar.open('An alert has been created based on your preferences.You will be notified when a slot opens up', 'Close');
+      snackBarRef.onAction().subscribe(() => {
+        this.preferences.subscribe = false;
+      });
+    }
+  }
   getVaccineSchedule(e) {
     if (this.preferences.subscribe) {
       this.subscription = interval(10000).subscribe(x => {
@@ -193,7 +201,10 @@ export class HomePage {
   criteriaTypeChange() {
     this.searchCompleted = false;
     this.unsubscribe();
-    this.savePreferences();
+    this.preferences.stateId = 0;
+    this.preferences.districtId = 0;
+    this.preferences.pinNumber = "";
+    //this.savePreferences();
   }
   /* ageGroupFilterChage(e) {
     this.parseSessionData();
@@ -204,31 +215,48 @@ export class HomePage {
     this.searchCompleted = true;
     console.log('sessions available', this.availableCenterSessions);
   }
-  filterFeeGroupValueSelectionChanged(e){
-    this.searchCompleted = false; 
+  filterFeeGroupValueSelectionChanged(e) {
+    this.searchCompleted = false;
+    this.parseSessionData();
+    this.searchCompleted = true;
+    console.log('sessions available', this.availableCenterSessions);
+  }
+
+  filterGroupVaccineSelectionChanged(e) {
+    this.searchCompleted = false;
     this.parseSessionData();
     this.searchCompleted = true;
     console.log('sessions available', this.availableCenterSessions);
   }
 
   constructFilterParams(element, index, array) {
-    if (this.filterGroupValue.length == 1) {
-      return element.available_capacity > 0 && element[this.filterGroupValue[0].Key] == this.filterGroupValue[0].Value;
+    var optionFilterVal = true;
+    var optionVaccineFilterVal = true;
+    if (this.filterGroupValue.length > 0) {
+      var optionFilterVal = false;
+      for (let filter of this.filterGroupValue) {
+        optionFilterVal = optionFilterVal || element[filter.Key] == filter.Value;
+      }
     }
-    else {
-      let params: Array<any> = [];
-      this.filterGroupValue.forEach(e => { params.push('element[' + e.Key + '] == "' + e.Value + '"') });
-      return element.available_capacity > 0 && params.join(" || ");
+    if (this.filterVaccineGroupValue.length > 0) {
+      var optionVaccineFilterVal = false;
+      for (let filter of this.filterVaccineGroupValue) {
+        optionVaccineFilterVal = optionVaccineFilterVal || element[filter.Key] == filter.Value;
+      }
     }
+    //return element.available_capacity > 0 && optionFilterVal && optionVaccineFilterVal;
+    return optionFilterVal && optionVaccineFilterVal;
   }
   constructFeeFilterParams(element, index, array) {
     if (this.filterFeeGroupValue.length == 1) {
       return element[this.filterFeeGroupValue[0].Key] == this.filterFeeGroupValue[0].Value;
     }
     else {
-      let params: Array<any> = [];
-      this.filterFeeGroupValue.forEach(e => { params.push('element[' + e.Key + '] == "' + e.Value + '"') });
-      return params.join(" || ");
+      var optionFilterVal = false;
+      for (let filter of this.filterFeeGroupValue) {
+        optionFilterVal = optionFilterVal || element[filter.Key] == filter.Value;
+      }
+      return optionFilterVal;
     }
   }
 }

@@ -9,26 +9,33 @@
           </mat-panel-title>
           <mat-panel-description>
             <div>
-              <span class="sc-kEqYlL cJWlqu" style="color: green;">
-                <fa-icon icon="hospital"></fa-icon>&nbsp;{{weeklyResult.filteredResults.length}}&nbsp;Center(s)
+              <span class="sc-kEqYlL cJWlqu" [ngStyle]="{'color': weeklyResult.totalSlots > 0 ? 'green' : 'orange' }">
+                <fa-icon icon="hospital"></fa-icon>
+                &nbsp;<span>{{weeklyResult.filteredResults.length}}&nbsp;Center(s)</span>
               </span>
             </div>
           </mat-panel-description>
-        </mat-expansion-panel-header>        
+        </mat-expansion-panel-header>
         <div>
-          <span class="sc-kEqYlL cJWlqu" style="color: green;">
-            <fa-icon icon="syringe"></fa-icon>&nbsp;{{weeklyResult.totalSlots}}&nbsp;Slot(s)
+          <span class="sc-kEqYlL cJWlqu">
+            <fa-icon icon="syringe"></fa-icon>&nbsp;<span
+              [ngStyle]="{'color': weeklyResult.totalSlots > 0 ? 'green' : 'orange' }">{{weeklyResult.totalSlots > 0 ?
+              weeklyResult.totalSlots : "No"}}&nbsp;Slot(s)</span>
           </span>
           <br />
-          <span class="sc-kEqYlL cJWlqu" style="color: green;">
-            <fa-icon icon="syringe"></fa-icon>Dose 1 :&nbsp;{{weeklyResult.totalSlotsDose1}}&nbsp;Slot(s)
+          <span class="sc-kEqYlL cJWlqu">
+            <fa-icon icon="syringe"></fa-icon>Dose 1 :&nbsp;<span
+              [ngStyle]="{'color': weeklyResult.totalSlotsDose1 > 0 ? 'green' : 'orange' }">{{weeklyResult.totalSlotsDose1
+              > 0 ? weeklyResult.totalSlotsDose1 : "No"}}&nbsp;Slot(s)</span>
           </span>
           &nbsp;&nbsp;
-          <span class="sc-kEqYlL cJWlqu" style="color: green;">
-            <fa-icon icon="syringe"></fa-icon>Dose 2 :&nbsp;{{weeklyResult.totalSlotsDose2}}&nbsp;Slot(s)
+          <span class="sc-kEqYlL cJWlqu">
+            <fa-icon icon="syringe"></fa-icon>Dose 2 :&nbsp;<span
+              [ngStyle]="{'color': weeklyResult.totalSlotsDose2 > 0 ? 'green' : 'orange' }">{{weeklyResult.totalSlotsDose2
+              > 0 ? weeklyResult.totalSlotsDose2 : "No"}}&nbsp;Slot(s)</span>
           </span>
         </div>
-        <div *ngFor="let item of weeklyResult.filteredResults;">
+        <div *ngFor="let item of weeklyResult.filteredResults | sortBy: { property: column, direction: isDesc }">
           <app-result-card [card]="item"></app-result-card>
         </div>
       </mat-expansion-panel>

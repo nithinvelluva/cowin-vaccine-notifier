@@ -29,6 +29,7 @@ export class Centers {
 export class AvailableCenterSessions {
     Center: Center;
     Sessions: Session[];
+    TotalSlots: number;
 }
 
 export class BaseOption {

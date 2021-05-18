@@ -21,6 +21,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { SortByPipe } from '../../pipes/sort.pipe';
 
 @NgModule({
   imports: [
@@ -30,7 +32,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
     ResultSectionPageRoutingModule,
     FontAwesomeModule,
 
-    
+    MatAutocompleteModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
@@ -42,6 +44,6 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatPaginatorModule,
     MatExpansionModule
   ],
-  declarations: [ResultSectionPage,ResultCardComponent]
+  declarations: [ResultSectionPage, ResultCardComponent, SortByPipe]
 })
-export class ResultSectionPageModule {}
+export class ResultSectionPageModule { }

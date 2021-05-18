@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { InAppBrowser, InAppBrowserOptions } from '@ionic-native/in-app-browser/ngx';
 
 @Component({
   selector: 'app-result-card',
@@ -12,28 +13,36 @@ export class ResultCardComponent implements OnInit {
   vaccine_type: string;
   slots_count: number;
 
-  constructor() { }
+  options: InAppBrowserOptions = {
+    location: 'yes',//Or 'no' 
+    hidden: 'no', //Or  'yes'
+    clearcache: 'yes',
+    clearsessioncache: 'yes',
+    //zoom : 'yes',//Android only ,shows browser zoom controls 
+    hardwareback: 'yes',
+    mediaPlaybackRequiresUserAction: 'no',
+    shouldPauseOnSuspend: 'no' //Android only    
+  };
+
+  constructor(private inAppBrowser: InAppBrowser) { }
 
   ngOnInit() {
-    
+
   }
 
-  ngOnChanges(){
-    this.fee_type = this.card.Center.fee_type;
+  ngOnChanges() {
+    this.fee_type = this.card.Center.fee_type;    
     var currentDateSession = this.card.Sessions;//.filter(x => x.date == this.getCurrentDate());
     if (currentDateSession && currentDateSession.length > 0) {
       this.vaccine_type = currentDateSession[0].vaccine;
-      this.ageGroup = currentDateSession[0].min_age_limit;      
+      this.ageGroup = currentDateSession[0].min_age_limit;
       this.slots_count = currentDateSession[0].available_capacity;
     }
   }
 
-  /* getCurrentDate() {
-    var today = new Date();
-    var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-    var yyyy = today.getFullYear();
-    return dd + '-' + mm + '-' + yyyy;
+  openWithInAppBrowser(e) {
+    let target = "_blank";
+    const url = 'https://selfregistration.cowin.gov.in/';
+    this.inAppBrowser.create(url, target, this.options);
   }
- */
 }

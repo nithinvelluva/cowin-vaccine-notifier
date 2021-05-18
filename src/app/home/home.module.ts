@@ -11,14 +11,17 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
-import { MatCardModule} from '@angular/material/card'; 
+import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatStepperModule } from '@angular/material/stepper';
+
 import { ResultSectionPage } from '../results/result-section/result-section.page';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
@@ -27,10 +30,10 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     CommonModule,
     FormsModule,
     IonicModule,
-    
+
     HomePageRoutingModule,
     HttpClientModule,
-    
+
     FontAwesomeModule,
     MatFormFieldModule,
     MatInputModule,
@@ -39,9 +42,10 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     MatRadioModule,
     MatCardModule,
     MatSlideToggleModule,
-    MatButtonToggleModule
-
+    MatButtonToggleModule,
+    MatSnackBarModule,
+    MatAutocompleteModule
   ],
-  declarations: [HomePage,ResultSectionPage]
+  declarations: [HomePage, ResultSectionPage]
 })
-export class HomePageModule {}
+export class HomePageModule { }
