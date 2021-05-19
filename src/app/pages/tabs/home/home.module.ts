@@ -18,12 +18,10 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatStepperModule } from '@angular/material/stepper';
-
-import { ResultSectionPage } from '../results/result-section/result-section.page';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { ResultSectionPage } from '../../results/result-section/result-section.page';
+import { SortByPipe } from 'src/app/pipes/sort.pipe';
+
 
 @NgModule({
   imports: [
@@ -35,6 +33,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     HttpClientModule,
 
     FontAwesomeModule,
+
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
@@ -46,6 +45,6 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     MatSnackBarModule,
     MatAutocompleteModule
   ],
-  declarations: [HomePage, ResultSectionPage]
+  declarations: [HomePage, ResultSectionPage, SortByPipe]
 })
 export class HomePageModule { }

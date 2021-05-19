@@ -1,19 +1,20 @@
 import { Component } from '@angular/core';
-import { CowinService } from '../services/cowin.service';
 import { interval, Subscription } from 'rxjs';
-import { Session, AvailableCenterSessions, FilterGroup } from '../models/vaccinesessions';
 
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { StorageLocalDBService } from '../services/storage/storage.localdb';
-import { SQLite, SQLiteObject } from '@ionic-native/sqlite/ngx';
+import { AvailableCenterSessions, FilterGroup, Session } from 'src/app/models/vaccinesessions';
+import { CowinService } from 'src/app/services/cowin.service';
+import { AlertService } from 'src/app/services/alert.service';
+import { VaccineAlertParams } from 'src/app/models/vaccinealert';
+import { Router } from '@angular/router';
 //import { StorageService } from '../services/storage/storage.service';
-//import { NativeStorage } from '@ionic-native/native-storage/ngx';
+// import { StorageLocalDBService } from '../services/storage/storage.localdb';
 
 @Component({
   selector: 'app-home',
-  templateUrl: 'home.page.html',  
+  templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss']
 })
 export class HomePage {
@@ -46,17 +47,18 @@ export class HomePage {
   constructor(private cowinService: CowinService
     , private localNotifications: LocalNotifications
     //, private storageService: StorageService
-    //,private storage: NativeStorage
-    , private localDBService: StorageLocalDBService
+    //, private localDBService: StorageLocalDBService
+    , private alertService: AlertService
     , private snackBar: MatSnackBar
+    , private router: Router
   ) { }
 
   buildFilterOptions() {
-    let ageGroups: Array<FilterGroup> = [<FilterGroup>{ Option: "18-44", Key: 'min_age_limit', Value: '18' },
+    let ageGroups: Array<FilterGroup> = [<FilterGroup>{ Option: "18+", Key: 'min_age_limit', Value: '18' },
     <FilterGroup>{ Option: "45+", Key: 'min_age_limit', Value: '45' }];
 
-    let vaccineGroups: Array<FilterGroup> = [<FilterGroup>{ Option: "COVISHIELD", Key: 'vaccine', Value: 'COVISHIELD' },
-    <FilterGroup>{ Option: "COVAXIN", Key: 'vaccine', Value: 'COVAXIN' },
+    let vaccineGroups: Array<FilterGroup> = [<FilterGroup>{ Option: "Covishield", Key: 'vaccine', Value: 'COVISHIELD' },
+    <FilterGroup>{ Option: "Covaxin", Key: 'vaccine', Value: 'COVAXIN' },
     <FilterGroup>{ Option: "Sputnik V", Key: 'vaccine', Value: 'SputnikV' }];
 
     let feeTypeGroups: Array<FilterGroup> = [<FilterGroup>{ Option: "Free", Key: 'fee_type', Value: 'Free' },
@@ -65,14 +67,13 @@ export class HomePage {
     this.toggleOptions = [...this.toggleOptions, ...ageGroups];
     this.feeOptions = [...this.feeOptions, ...feeTypeGroups];
     this.vaccineOptions = [...this.vaccineOptions, ...vaccineGroups];
-
-    this.localDBService.hai();
   }
   ngOnInit(): void {
     this.buildFilterOptions();
     //this.storageService.get(this.preferencesKey).then(async (data: any) => {
-    //console.log(data);
-    //this.preferences = data;
+    this.alertService.getAllAlerts().then(async (data: any) => {
+      console.log(data);
+    });
     this.cowinService.GetStates().subscribe((data: any) => {
       this.states = data.states;
       if (this.preferences.districtId) {
@@ -84,7 +85,12 @@ export class HomePage {
   }
 
   onStateChange(e) {
+    this.searchCompleted = false;
+    this.preferences.districtId = 0;
     this.getDistricts(this.preferences.stateId);
+  }
+  onDistrictChange(e) {
+    this.searchCompleted = false;
   }
   getDistricts(stateId) {
     this.cowinService.GetDistricts(stateId).subscribe((data: any) => {
@@ -162,9 +168,31 @@ export class HomePage {
 
   subscribeToNotification(e) {
     if (this.preferences.subscribe) {
-      let snackBarRef = this.snackBar.open('An alert has been created based on your preferences.You will be notified when a slot opens up', 'Close');
-      snackBarRef.onAction().subscribe(() => {
-        this.preferences.subscribe = false;
+      let params = <VaccineAlertParams>{
+        district: this.preferences.searchCriteria == 2 ? this.preferences.districtId : null,
+        state: this.preferences.searchCriteria == 2 ? this.preferences.stateId : null,
+
+        pincode: this.preferences.searchCriteria == 1 ? this.preferences.pinNumber : null,
+        search_type: this.preferences.searchCriteria,
+
+        ageFilterGroupValue: this.filterFeeGroupValue,
+        feeFilterGroupValue: this.filterFeeGroupValue,
+        vaccineFilterGroupValue: this.filterVaccineGroupValue
+      };
+      this.alertService.createAlert(params).then(x => {
+        this.preferences.subscribe = false;        
+        let snackBarRef = this.snackBar.open('An alert has been created based on your preferences.You will be notified when a slot opens up', 'View Alerts',
+          {
+            duration: 5000
+          }
+        );
+        snackBarRef.onAction().subscribe(() => {
+          this.preferences.subscribe = false;
+          this.router.navigate(['/cowinslot/alert']);
+        });
+        snackBarRef.afterDismissed().subscribe(() => {
+          this.preferences.subscribe = false;
+        });
       });
     }
   }
@@ -179,16 +207,13 @@ export class HomePage {
     }
   }
   getSchedule() {
-    this.savePreferences();
     if (this.preferences.searchCriteria == 2) {
       this.getcalendarByDistrict();
     } else if (this.preferences.searchCriteria == 1) {
       this.getcalendarByPincode();
     }
   }
-  savePreferences() {
-    //this.storageService.set(this.preferencesKey, this.preferences);
-  }
+
   actionDisabled() {
     return this.preferences.searchCriteria == 1 ? !this.preferences.pinNumber : !(this.preferences.stateId && this.preferences.districtId);
   }
@@ -204,11 +229,8 @@ export class HomePage {
     this.preferences.stateId = 0;
     this.preferences.districtId = 0;
     this.preferences.pinNumber = "";
-    //this.savePreferences();
   }
-  /* ageGroupFilterChage(e) {
-    this.parseSessionData();
-  } */
+
   filterGroupSelectionChanged(e) {
     this.searchCompleted = false;
     this.parseSessionData();

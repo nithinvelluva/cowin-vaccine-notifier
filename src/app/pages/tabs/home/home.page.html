@@ -1,17 +1,9 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Cowin Notifier
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true">
   <mat-card>
-    <mat-card-header>
-      <mat-card-title>Set your preferences</mat-card-title>
+    <mat-card-header class="custom-mat-card-header">
+      <mat-card-title>Search vaccination slots</mat-card-title>
       <mat-card-subtitle>
-        Available slots will be notified based on your preferences.
+        
       </mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
@@ -40,7 +32,7 @@
 
         <mat-form-field class="example-full-width">
           <mat-label>District</mat-label>
-          <mat-select [(ngModel)]="preferences.districtId" name="district">
+          <mat-select [(ngModel)]="preferences.districtId" name="district" (selectionChange)="onDistrictChange($event)">
             <mat-option [value]="">-- Please Select --</mat-option>
             <mat-option *ngFor="let item of districts" [value]="item.district_id">
               {{item.district_name}}
@@ -65,13 +57,13 @@
       <div *ngIf="searchCompleted && hasResults" #filterSection>
         <div>
           <mat-button-toggle-group [(value)]="filterGroupValue" #group="matButtonToggleGroup" multiple=true
-            color="primary">
+            color="primary" [disabled]="actionDisabled()">
             <mat-button-toggle *ngFor="let item of toggleOptions;" (change)="filterGroupSelectionChanged($event)"
               [value]="item" class="reduced-line-height">{{item.Option}}</mat-button-toggle>
           </mat-button-toggle-group>
           &nbsp;&nbsp;
           <mat-button-toggle-group [(value)]="filterFeeGroupValue" #group="matButtonToggleGroup" multiple=true
-            color="primary">
+            color="primary" [disabled]="actionDisabled()">
             <mat-button-toggle *ngFor="let item of feeOptions;" (change)="filterFeeGroupValueSelectionChanged($event)"
               [value]="item">{{item.Option}}</mat-button-toggle>
           </mat-button-toggle-group>
@@ -79,7 +71,7 @@
         <br />
         <div>
           <mat-button-toggle-group [(value)]="filterVaccineGroupValue" #group="matButtonToggleGroup" multiple=true
-            color="primary">
+            color="primary" [disabled]="actionDisabled()">
             <mat-button-toggle *ngFor="let item of vaccineOptions;"
               (change)="filterGroupVaccineSelectionChanged($event)" [value]="item">{{item.Option}}</mat-button-toggle>
           </mat-button-toggle-group>

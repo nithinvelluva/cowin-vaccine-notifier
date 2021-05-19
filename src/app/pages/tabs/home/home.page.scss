@@ -30,21 +30,26 @@
   margin-left: 16px;
 }
 
-.showToggle.mat-checked .mat-slide-toggle-thumb:before{
-  content: 'unsubscribe';
-  margin-left:-28px !important;
+.showToggle.mat-checked .mat-slide-toggle-thumb:before {
+  content: "unsubscribe";
+  margin-left: -28px !important;
 }
 
-.mat-button-toggle-appearance-standard .mat-button-toggle-label-content{
+.mat-button-toggle-appearance-standard.mat-button-toggle-label-content {
   line-height: 35px !important;
 }
 
-@import '~@angular/material/theming';
+.mat-card-header {
+  text-align: center !important;
+  margin: 0px !important;
+}
+
+@import "~@angular/material/theming";
 
 @include mat-core();
 
 $app-primary: mat-palette($mat-pink);
-$app-accent:  mat-palette($mat-gray, A200, A100, A400);
+$app-accent: mat-palette($mat-gray, A200, A100, A400);
 
 $app-theme: mat-light-theme($app-primary, $app-accent);
 
@@ -60,32 +65,36 @@ $app-theme: mat-light-theme($app-primary, $app-accent);
   .mat-button-toggle-checked {
     background-color: mat-color($accent);
     color: mat-color($accent, default-contrast);
-  }  
+  }
 }
 
 // Include the mixin
 @include mix-app-theme($app-theme);
 
-
 /* .mat-button-toggle-label {
-  flex: 1 1 100%;
-  box-sizing: border-box;
-  align-items: center;
-  flex-direction: row;
-  display: flex;
-
-  .mat-button-toggle-label-content {
-      text-align: center;
-      flex: 1 1 100%;
-  }
-} */
+    flex: 1 1 100%;
+    box-sizing: border-box;
+    align-items: center;
+    flex-direction: row;
+    display: flex;
+  
+    .mat-button-toggle-label-content {
+        text-align: center;
+        flex: 1 1 100%;
+    }
+  } */
 
 .mat-form-field + .mat-form-field {
   margin-left: 8px;
 }
-.example-half-width{
+.example-half-width {
   width: 50%;
 }
-.example-full-width{
+.example-full-width {
   width: 90%;
+}
+
+.mat-button-toggle-standalone.mat-button-toggle-appearance-standard,
+.mat-button-toggle-group-appearance-standard {
+  border-radius: 40px !important;
 }

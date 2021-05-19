@@ -18,11 +18,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSortModule } from '@angular/material/sort';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { SortByPipe } from '../../pipes/sort.pipe';
+import { SortByPipe } from '../../../pipes/sort.pipe';
 
 @NgModule({
   imports: [
@@ -39,11 +37,9 @@ import { SortByPipe } from '../../pipes/sort.pipe';
     MatButtonModule,
     MatRadioModule,
     MatCardModule,
-    MatSlideToggleModule,
-    MatSortModule,
-    MatPaginatorModule,
+    MatSlideToggleModule,    
     MatExpansionModule
   ],
-  declarations: [ResultSectionPage, ResultCardComponent, SortByPipe]
+  declarations: [SortByPipe, ResultSectionPage, ResultCardComponent]
 })
 export class ResultSectionPageModule { }
