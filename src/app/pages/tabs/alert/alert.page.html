@@ -1,3 +1,59 @@
 <ion-content>
-
+    <ng-container>
+        <div class="cBslim">
+            <span class="gDnWjd">
+                <h3>• Manage your alerts •</h3>
+            </span>
+        </div>
+        <ion-fab vertical="bottom" horizontal="end" slot="fixed" (click)='createAlert($event)'>
+            <ion-fab-button>
+                <ion-icon name="add"></ion-icon>
+            </ion-fab-button>
+        </ion-fab>
+        <ng-container *ngIf="alerts && alerts.length > 0">
+            <mat-card class="custom-mat-card" *ngFor="let alert of alerts">
+                <mat-card-header>
+                </mat-card-header>
+                <mat-card-content class="custom-mat-card-content">
+                    <div class="flex-container">
+                        <section>
+                            <span *ngIf="alert.params.search_type == 1">
+                                <p>
+                                    PINCODE :&nbsp;{{alert.params?.pincode}}
+                                </p>
+                            </span>
+                            <span *ngIf="alert.params.search_type == 2">
+                                <div>
+                                    State:&nbsp;{{alert.params?.state}}
+                                </div>
+                                <br />
+                                <div>
+                                    District:&nbsp;{{alert.params?.district}}
+                                </div>
+                            </span>
+                        </section>
+                        <section>
+                            <div class="example-flex-container">
+                                <button mat-icon-button aria-label="Example icon button with a vertical three dot icon">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                                <button mat-icon-button color="primary"
+                                    aria-label="Example icon button with a home icon"
+                                    (click)="removeAlert(alert.alert_id)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </div>
+                        </section>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </ng-container>
+        <ng-container *ngIf="!alerts || alerts.length == 0">
+            <div class="cBslim">
+                <span class="gDnWjd">
+                    <label>No alerts created.</label>
+                </span>
+            </div>
+        </ng-container>
+    </ng-container>
 </ion-content>

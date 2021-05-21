@@ -19,19 +19,35 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
-import { SQLite, SQLiteObject } from '@ionic-native/sqlite/ngx';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
+import { ConfirmDialogComponent } from './pages/alert-dialogs/confirm-dialog/confirm-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [
+    AppComponent,
+    ConfirmDialogComponent
+  ],
   entryComponents: [],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, BrowserAnimationsModule, HttpClientModule, FontAwesomeModule],
-  providers: [LocalNotifications,
+  imports: [
+    BrowserModule,
+    IonicModule.forRoot(),
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    HttpClientModule,
+    FontAwesomeModule,
+    MatDialogModule,
+    MatButtonModule
+  ],
+  providers: [
+    BackgroundMode,
+    LocalNotifications,
     NativeStorage,
     SplashScreen,
     StatusBar,
-    InAppBrowser,    
-    SQLite,
+    InAppBrowser,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
 })

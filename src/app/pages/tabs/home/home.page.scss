@@ -7,6 +7,13 @@
   top: 50%;
   transform: translateY(-50%);
 }
+.allign-center{
+  text-align: center;
+}
+.right-left-padding{
+  padding-right: 15px;
+  padding-left: 15px;;
+}
 
 #container strong {
   font-size: 20px;
@@ -93,8 +100,28 @@ $app-theme: mat-light-theme($app-primary, $app-accent);
 .example-full-width {
   width: 90%;
 }
+.example-intermediate-width {
+  width: 75%;
+}
 
 .mat-button-toggle-standalone.mat-button-toggle-appearance-standard,
 .mat-button-toggle-group-appearance-standard {
   border-radius: 40px !important;
+}
+
+.cBslim {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+}
+
+.gDnWjd {
+    font-size: 1rem;
+    font-weight: 400;
+    margin-bottom: 0px;
+    display: block;
+    max-width: 40ch;
+    text-align: center;
 }

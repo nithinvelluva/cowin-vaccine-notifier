@@ -9,11 +9,11 @@ const routes: Routes = [
     component: CowinslotPage,
     children: [
       {
+
         path: 'home',
         children: [
           {
             path: '',
-            //loadChildren: 'app/pages/tabs/home/home.module#HomePageModule'
             loadChildren: () => import('../tabs/home/home.module').then(m => m.HomePageModule)
           }
         ]
@@ -23,20 +23,12 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            //loadChildren: '../tabs/alert/alert.module#AlertPageModule'
             loadChildren: () => import('../tabs/alert/alert.module').then(m => m.AlertPageModule)
           }
         ]
       },
       {
         path: '',
-        /* children: [
-          {
-            path: '',
-            //loadChildren: 'app/pages/tabs/home/home.module#HomePageModule'
-            loadChildren: () => import('../tabs/home/home.module').then(m => m.HomePageModule)
-          }
-        ] */
         redirectTo: 'home',
         pathMatch: 'full'
       },

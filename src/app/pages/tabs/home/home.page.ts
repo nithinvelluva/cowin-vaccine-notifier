@@ -7,10 +7,13 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { AvailableCenterSessions, FilterGroup, Session } from 'src/app/models/vaccinesessions';
 import { CowinService } from 'src/app/services/cowin.service';
 import { AlertService } from 'src/app/services/alert.service';
-import { VaccineAlertParams } from 'src/app/models/vaccinealert';
-import { Router } from '@angular/router';
-//import { StorageService } from '../services/storage/storage.service';
-// import { StorageLocalDBService } from '../services/storage/storage.localdb';
+import { VaccineAlert, VaccineAlertParams } from 'src/app/models/vaccinealert';
+import { NavigationEnd, Router } from '@angular/router';
+import { FormControl } from '@angular/forms';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { ConfirmationDialogModel } from 'src/app/models/confirmationdialog';
+import { ConfirmDialogComponent } from '../../alert-dialogs/confirm-dialog/confirm-dialog.component';
+import { AppConstants } from 'src/app/constants/AppConstants';
 
 @Component({
   selector: 'app-home',
@@ -27,7 +30,7 @@ export class HomePage {
     pinNumber: "",
     ageGroup: 1,
     subscribe: false
-  }
+  };
   not_id = 0;
   subscription: Subscription;
   preferencesKey: string = 'preferences';
@@ -36,22 +39,40 @@ export class HomePage {
   allCenterSessions: any[];
 
   filterFeeGroupValue: Array<FilterGroup> = [];
-  filterGroupValue: Array<FilterGroup> = [];
+  filterAgeGroupValue: Array<FilterGroup> = [];
   filterVaccineGroupValue: Array<FilterGroup> = [];
-  toggleOptions: Array<FilterGroup> = [];
+  ageOptions: Array<FilterGroup> = [];
   feeOptions: Array<FilterGroup> = [];
   vaccineOptions: Array<FilterGroup> = [];
 
   hasResults: boolean;
 
-  constructor(private cowinService: CowinService
+  myControl = new FormControl();
+  alerts: VaccineAlert[] = [];
+  navigationSubscription;
+
+  constructor(
+    private cowinService: CowinService
     , private localNotifications: LocalNotifications
-    //, private storageService: StorageService
-    //, private localDBService: StorageLocalDBService
     , private alertService: AlertService
     , private snackBar: MatSnackBar
     , private router: Router
-  ) { }
+    , public dialog: MatDialog
+  ) {
+    const currentUrl = this.router.url;
+    this.navigationSubscription = this.router.events.subscribe((e: any) => {
+      // If it is a NavigationEnd event re-initalise the component
+      if (e instanceof NavigationEnd && e.url == currentUrl) {
+        this.setDefaults();
+      }
+    });
+  }
+
+  resetFilters() {
+    this.filterAgeGroupValue = [];
+    this.filterFeeGroupValue = [];
+    this.filterVaccineGroupValue = [];
+  }
 
   buildFilterOptions() {
     let ageGroups: Array<FilterGroup> = [<FilterGroup>{ Option: "18+", Key: 'min_age_limit', Value: '18' },
@@ -64,24 +85,56 @@ export class HomePage {
     let feeTypeGroups: Array<FilterGroup> = [<FilterGroup>{ Option: "Free", Key: 'fee_type', Value: 'Free' },
     <FilterGroup>{ Option: "Paid", Key: 'fee_type', Value: 'Paid' }];
 
-    this.toggleOptions = [...this.toggleOptions, ...ageGroups];
+    this.ageOptions = [];
+    this.feeOptions = [];
+    this.vaccineOptions = [];
+    this.ageOptions = [...this.ageOptions, ...ageGroups];
     this.feeOptions = [...this.feeOptions, ...feeTypeGroups];
     this.vaccineOptions = [...this.vaccineOptions, ...vaccineGroups];
   }
-  ngOnInit(): void {
+
+  setDefaults() {    
+    this.preferences.stateId = 0;
+    this.preferences.districtId = 0;
+    this.preferences.searchCriteria = 1;
+    this.preferences.pinNumber = "";
+    this.preferences.ageGroup = 1;
+    this.preferences.subscribe = false;
+
+    this.hasResults = false;
+    this.searchCompleted = false;
+
+    this.dialog.closeAll();
     this.buildFilterOptions();
-    //this.storageService.get(this.preferencesKey).then(async (data: any) => {
-    this.alertService.getAllAlerts().then(async (data: any) => {
-      console.log(data);
-    });
+    
     this.cowinService.GetStates().subscribe((data: any) => {
       this.states = data.states;
-      if (this.preferences.districtId) {
-        this.getDistricts(this.preferences.stateId);
+    });
+  }
+
+  getVaccineSchedule(e) {
+    this.alertService.getAllAlerts().then(async (data: any) => {
+      if (data && data.length > 0) {
+        for (let alert of data) {
+          this.subscription = interval(10000).subscribe(x => {
+            this.getSchedule();
+          });
+        }
       }
     });
-    this.getVaccineSchedule(null);
-    //});
+  }
+
+  ngOnInit(): void {
+    //this.setDefaults();
+  }
+
+  ngOnDestroy() {
+    // avoid memory leaks here by cleaning up after ourselves. If we  
+    // don't then we will continue to run our initialiseInvites()   
+    // method on every navigationEnd event.
+    if (this.navigationSubscription) {
+      this.navigationSubscription.unsubscribe();
+    }
   }
 
   onStateChange(e) {
@@ -104,14 +157,9 @@ export class HomePage {
       var centers = feeFilter ? this.allCenterSessions.filter(x => this.constructFeeFilterParams(x, 0, this.allCenterSessions))
         : this.allCenterSessions;
 
-      /* var filterParams = (this.filterGroupValue && this.filterGroupValue.length > 0)
-        || (this.filterVaccineGroupValue && this.filterVaccineGroupValue.length > 0); */
       centers.forEach((element, i, arr) => {
         var openSessions: Session[] = [];
         var allSessions: Session[] = element.sessions;
-        /* openSessions = filterParams ?
-          [...openSessions, ...allSessions.filter(x => this.constructFilterParams(x, i, allSessions))] :
-          [...openSessions, ...allSessions.filter(x => x.available_capacity > 0)]; */
         openSessions = [...openSessions, ...allSessions.filter(x => this.constructFilterParams(x, i, allSessions))];
         if (openSessions && openSessions.length > 0) {
           this.availableCenterSessions.push(
@@ -124,20 +172,24 @@ export class HomePage {
       });
     }
   }
+
+  pushAvailableSessionNotification() {
+    this.localNotifications.schedule({
+      id: ++this.not_id,
+      text: 'Vaccines slot found !! Book your slots in COWIN',
+      sound: 'file://sound.mp3',
+      data: { secret: 'key_data' }
+    });
+  }
+
   getcalendarByDistrict() {
     this.searchCompleted = false;
     this.cowinService.GetCalendarByDistrict(this.preferences.districtId).subscribe((data: any) => {
       if (data && data.centers) {
         this.allCenterSessions = data.centers;
         this.parseSessionData();
-        console.log('sessions available', this.availableCenterSessions);
         if (this.availableCenterSessions && this.availableCenterSessions.length > 0 && this.preferences.subscribe) {
-          this.localNotifications.schedule({
-            id: ++this.not_id,
-            text: 'Vaccines slot found !! Book your slots in COWIN',
-            sound: 'file://sound.mp3',
-            data: { secret: 'key_data' }
-          });
+          this.pushAvailableSessionNotification();
         }
       }
       this.hasResults = data && data.centers && data.centers.length > 0;
@@ -152,13 +204,7 @@ export class HomePage {
         this.allCenterSessions = data.centers;
         this.parseSessionData();
         if (this.availableCenterSessions && this.availableCenterSessions.length > 0 && this.preferences.subscribe) {
-          alert('found !!');
-          this.localNotifications.schedule({
-            id: ++this.not_id,
-            text: 'Vaccines slot found !! Book your slots in COWIN',
-            sound: 'file://sound.mp3',
-            data: { secret: 'key_data' }
-          });
+          this.pushAvailableSessionNotification();
         }
       }
       this.hasResults = data && data.centers && data.centers.length > 0;
@@ -166,46 +212,40 @@ export class HomePage {
     });
   }
 
-  subscribeToNotification(e) {
-    if (this.preferences.subscribe) {
-      let params = <VaccineAlertParams>{
-        district: this.preferences.searchCriteria == 2 ? this.preferences.districtId : null,
-        state: this.preferences.searchCriteria == 2 ? this.preferences.stateId : null,
+  subscribeToNotification() {
+    let params = <VaccineAlertParams>{
+      district_id: this.preferences.searchCriteria == 2 ? this.preferences.districtId : null,
+      state_id: this.preferences.searchCriteria == 2 ? this.preferences.stateId : null,
 
-        pincode: this.preferences.searchCriteria == 1 ? this.preferences.pinNumber : null,
-        search_type: this.preferences.searchCriteria,
+      district: this.preferences.searchCriteria == 2 ? this.districts.find(d => d.district_id == this.preferences.districtId)?.district_name : null,
+      state: this.preferences.searchCriteria == 2 ? this.states.find(s => s.state_id == this.preferences.stateId)?.state_name : null,
 
-        ageFilterGroupValue: this.filterFeeGroupValue,
-        feeFilterGroupValue: this.filterFeeGroupValue,
-        vaccineFilterGroupValue: this.filterVaccineGroupValue
-      };
-      this.alertService.createAlert(params).then(x => {
-        this.preferences.subscribe = false;        
-        let snackBarRef = this.snackBar.open('An alert has been created based on your preferences.You will be notified when a slot opens up', 'View Alerts',
-          {
-            duration: 5000
-          }
-        );
-        snackBarRef.onAction().subscribe(() => {
-          this.preferences.subscribe = false;
-          this.router.navigate(['/cowinslot/alert']);
-        });
-        snackBarRef.afterDismissed().subscribe(() => {
-          this.preferences.subscribe = false;
-        });
+      pincode: this.preferences.searchCriteria == 1 ? this.preferences.pinNumber : null,
+      search_type: this.preferences.searchCriteria,
+
+      ageFilterGroupValue: this.filterAgeGroupValue,
+      feeFilterGroupValue: this.filterFeeGroupValue,
+      vaccineFilterGroupValue: this.filterVaccineGroupValue,
+
+      date: new Date().toString()
+    };
+    this.alertService.createAlert(params).then(x => {
+      this.preferences.subscribe = false;
+      let snackBarRef = this.snackBar.open('An alert has been created based on your preferences.You will be notified when a slot opens up', 'View Alerts',
+        {
+          duration: 5000
+        }
+      );
+      snackBarRef.onAction().subscribe(() => {
+        this.preferences.subscribe = false;
+        this.router.navigate(['/cowinslot/alert']);
       });
-    }
-  }
-  getVaccineSchedule(e) {
-    if (this.preferences.subscribe) {
-      this.subscription = interval(10000).subscribe(x => {
-        this.getSchedule();
+      snackBarRef.afterDismissed().subscribe(() => {
+        this.preferences.subscribe = false;
       });
-    }
-    else {
-      this.unsubscribe();
-    }
+    });
   }
+
   getSchedule() {
     if (this.preferences.searchCriteria == 2) {
       this.getcalendarByDistrict();
@@ -217,46 +257,91 @@ export class HomePage {
   actionDisabled() {
     return this.preferences.searchCriteria == 1 ? !this.preferences.pinNumber : !(this.preferences.stateId && this.preferences.districtId);
   }
+
+  createAlert() {
+    this.alertService.getAllAlerts().then(async (data: any) => {
+      let actions = ['Dismiss', 'View Alerts'];
+      var alertCount = data ? data && data.length : 0;
+      if (alertCount == AppConstants.AlertAllowedLimit) {
+        const dialogData = new ConfirmationDialogModel('Warning', 'You have reached maximum limit of alerts', actions);
+        this.openDialog(dialogData);
+      }
+      else {
+        if (!this.checkAlertDuplicates(data)) {
+          this.subscribeToNotification();
+        }
+        else {
+          const dialogData = new ConfirmationDialogModel('Warning', 'An alert with similar preferences found', actions);
+          this.openDialog(dialogData);
+        }
+      }
+    });
+  }
+
+  checkAlertDuplicates(data: VaccineAlert[]): boolean {
+    let duplicate = false;
+    if (data && data.length > 0) {
+      if (this.preferences.searchCriteria == 1) {
+        duplicate = data.find(a => a.params.pincode == this.preferences.pinNumber) != null;
+      }
+      else {
+        duplicate = data.find(a => (a.params.state_id == this.preferences.stateId && a.params.district_id == this.preferences.districtId)) != null;
+      }
+    }
+    return duplicate;
+  }
+
+  openDialog(dialogData: ConfirmationDialogModel): void {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = dialogData;
+    dialogConfig.width = '90%';
+
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (!result) {
+
+      }
+      else {
+        this.router.navigate(['/cowinslot/alert']);
+      }
+    });
+  }
+
   unsubscribe() {
     this.preferences.subscribe = false;
     if (this.subscription != null && this.subscription != undefined) {
       this.subscription.unsubscribe();
     }
   }
-  criteriaTypeChange() {
+  criteriaTypeChange(e) {
     this.searchCompleted = false;
-    this.unsubscribe();
-    this.preferences.stateId = 0;
-    this.preferences.districtId = 0;
-    this.preferences.pinNumber = "";
   }
 
   filterGroupSelectionChanged(e) {
     this.searchCompleted = false;
     this.parseSessionData();
     this.searchCompleted = true;
-    console.log('sessions available', this.availableCenterSessions);
   }
   filterFeeGroupValueSelectionChanged(e) {
     this.searchCompleted = false;
     this.parseSessionData();
     this.searchCompleted = true;
-    console.log('sessions available', this.availableCenterSessions);
   }
 
   filterGroupVaccineSelectionChanged(e) {
     this.searchCompleted = false;
     this.parseSessionData();
     this.searchCompleted = true;
-    console.log('sessions available', this.availableCenterSessions);
   }
 
   constructFilterParams(element, index, array) {
     var optionFilterVal = true;
     var optionVaccineFilterVal = true;
-    if (this.filterGroupValue.length > 0) {
+    if (this.filterAgeGroupValue.length > 0) {
       var optionFilterVal = false;
-      for (let filter of this.filterGroupValue) {
+      for (let filter of this.filterAgeGroupValue) {
         optionFilterVal = optionFilterVal || element[filter.Key] == filter.Value;
       }
     }
@@ -266,7 +351,6 @@ export class HomePage {
         optionVaccineFilterVal = optionVaccineFilterVal || element[filter.Key] == filter.Value;
       }
     }
-    //return element.available_capacity > 0 && optionFilterVal && optionVaccineFilterVal;
     return optionFilterVal && optionVaccineFilterVal;
   }
   constructFeeFilterParams(element, index, array) {

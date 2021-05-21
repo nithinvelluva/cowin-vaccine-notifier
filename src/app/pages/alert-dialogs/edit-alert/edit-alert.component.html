@@ -1,0 +1,55 @@
+<h3 mat-dialog-title>
+  {{title}}
+</h3>
+
+<mat-dialog-content>
+  <div class="allign-center">
+    <mat-radio-group [(ngModel)]="vaccineAlert.params.search_type" aria-label="Select an option" name="criteriaType">
+      <mat-radio-button [value]="1">Pincode</mat-radio-button>
+      <mat-radio-button [value]="2">District</mat-radio-button>
+    </mat-radio-group>
+  </div>
+  <br />
+
+  <div *ngIf="vaccineAlert.params.search_type == 2" class="allign-center">
+    <mat-form-field class="example-full-width">
+      <mat-label>State</mat-label>
+      <mat-select [(ngModel)]="vaccineAlert.params.state_id" name="state" (selectionChange)="onStateChange($event)">
+        <mat-option [value]="">-- Please Select --</mat-option>
+        <mat-option *ngFor="let item of states" [value]="item.state_id">
+          {{item.state_name}}
+        </mat-option>
+      </mat-select>
+
+    </mat-form-field>
+
+    <br />
+
+    <mat-form-field class="example-full-width">
+      <mat-label>District</mat-label>
+      <mat-select [(ngModel)]="vaccineAlert.params.district_id" name="district">
+        <mat-option [value]="">-- Please Select --</mat-option>
+        <mat-option *ngFor="let item of districts" [value]="item.district_id">
+          {{item.district_name}}
+        </mat-option>
+      </mat-select>
+
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="vaccineAlert.params.search_type == 1" class="allign-center right-left-padding">
+    <mat-form-field class="example-intermediate-width">
+      <mat-label>Pincode</mat-label>
+      <input matInput placeholder="Enter your Pincode" [(ngModel)]="vaccineAlert.params.pincode" name="PIN"
+        type="number">
+    </mat-form-field>
+  </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions style="justify-content: flex-end;">
+  <div class="example-flex-container">
+    <button class="mat-raised-button" (click)="onDismiss()" style="margin:10px;">{{actions[0]}}</button>
+    <button class="mat-raised-button mat-primary" (click)="onConfirm()" style="margin:10px;" [disabled]="actionDisabled()">{{actions[1]}}</button>
+  </div>
+</mat-dialog-actions>

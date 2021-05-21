@@ -46,10 +46,16 @@ export class AlertService {
     }
 
     async removeAlert(key: string): Promise<void> {
+        let serviceRef = this.storageService;
+        let storageKey = this.alertListKey;
         return await this.getAllAlerts().then(function (data) {
             if (data) {
                 console.log(data);
-                //this.storageService.remove(this.alertListKey);
+                var index = data.findIndex(x => x.alert_id == key);
+                if (index != -1) {
+                    data.splice(index, 1);
+                    serviceRef.setItem(storageKey, JSON.stringify(data));
+                }
             }
         });
     }

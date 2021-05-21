@@ -1,0 +1,16 @@
+<h3 mat-dialog-title>
+  {{title}}
+</h3>
+
+<mat-dialog-content>
+
+  <p>{{message}}</p>
+
+</mat-dialog-content>
+
+<mat-dialog-actions style="justify-content: flex-end;">
+  <div class="example-flex-container">
+    <button class="mat-raised-button" (click)="onDismiss()" style="margin:10px;">{{actions[0]}}</button>
+    <button class="mat-raised-button mat-primary" (click)="onConfirm()" style="margin:10px;">{{actions[1]}}</button>
+  </div>
+</mat-dialog-actions>

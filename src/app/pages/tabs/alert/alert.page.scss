@@ -1,0 +1,73 @@
+.custom-mat-card{
+    margin: 8px;
+    box-shadow: 2px 2px 2px 2px rgb(0 0 0 / 20%), 2px 2px 2px 2px rgb(0 0 0 / 14%), 2px 2px 3px 2px rgb(0 0 0 / 12%);
+}
+
+.flex-container {
+    display: flex;
+    flex-flow: column wrap;
+    flex-direction: row;
+    justify-content: space-between;
+}
+  
+.flex-container > div {
+    background-color: #fff;
+    width: 100px;
+    margin: 10px;
+    text-align: center;
+    line-height: 75px;
+    font-size: 30px;
+}
+
+ section {
+    display: table;
+  }
+  
+  .example-label {
+    display: table-cell;
+    font-size: 14px;
+    margin-left: 8px;
+    min-width: 120px;
+  }
+  
+  .example-button-row {
+    display: table-cell;
+    width: 490px;
+  }
+  
+  .example-button-row .mat-button-base {
+    margin: 8px 8px 8px 0;
+  }
+  
+  .example-flex-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  
+  .example-button-container {
+    display: flex;
+    justify-content: center;
+    width: 120px;
+  } 
+
+  .cBslim {
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+  }
+  
+  .gDnWjd {
+      font-size: 1rem;
+      font-weight: 400;
+      margin-bottom: 0px;
+      display: block;
+      max-width: 40ch;
+      text-align: center;
+  }
+  .custom-div{
+    padding: 10px;
+    text-align: right;
+  }

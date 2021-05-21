@@ -17,22 +17,23 @@ const routes: Routes = [
   },
   {
     path: 'alert',
+    runGuardsAndResolvers: 'always',
     loadChildren: () => import('./pages/tabs/alert/alert.module').then(m => m.AlertPageModule)
   },
   {
     path: 'hometab',
+    //runGuardsAndResolvers: 'always',
     loadChildren: () => import('./pages/tabs/home/home.module').then(m => m.HomePageModule)
   },
   {
     path: 'cowinslot',
     loadChildren: () => import('./pages/cowinslot/cowinslot.module').then(m => m.CowinslotPageModule)
   }
-
 ];
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
+    RouterModule.forRoot(routes, { onSameUrlNavigation: 'reload', preloadingStrategy: PreloadAllModules })
   ],
   exports: [RouterModule]
 })

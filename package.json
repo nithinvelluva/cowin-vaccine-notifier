@@ -28,6 +28,7 @@
     "@fortawesome/free-brands-svg-icons": "^5.15.3",
     "@fortawesome/free-regular-svg-icons": "^5.15.3",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
+    "@ionic-native/background-mode": "^5.33.0",
     "@ionic-native/core": "^5.33.0",
     "@ionic-native/in-app-browser": "^5.33.0",
     "@ionic-native/local-notifications": "^5.33.0",
@@ -59,6 +60,7 @@
     "@typescript-eslint/eslint-plugin": "4.16.1",
     "@typescript-eslint/parser": "4.16.1",
     "cordova-android": "^9.1.0",
+    "cordova-plugin-background-mode": "^0.7.3",
     "cordova-plugin-badge": "^0.8.8",
     "cordova-plugin-device": "^2.0.2",
     "cordova-plugin-inappbrowser": "^5.0.0",
@@ -100,7 +102,8 @@
       "cordova-plugin-local-notification": {},
       "cordova-plugin-nativestorage": {},
       "cordova-plugin-inappbrowser": {},
-      "cordova-sqlite-storage": {}
+      "cordova-sqlite-storage": {},
+      "cordova-plugin-background-mode": {}
     },
     "platforms": [
       "android"
