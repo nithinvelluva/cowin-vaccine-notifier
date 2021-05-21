@@ -5,7 +5,14 @@
                 <h3>• Manage your alerts •</h3>
             </span>
         </div>
-        <ion-fab vertical="bottom" horizontal="end" slot="fixed" (click)='createAlert($event)'>
+        <ng-container *ngIf="alerts && alerts.length == 5">
+            <div class="cBslim">
+                <span class="gDnWjd">
+                    <label>You have reached the maximum limit of alerts.</label>
+                </span>
+            </div>
+        </ng-container>
+        <ion-fab vertical="bottom" horizontal="end" slot="fixed" (click)='createAlert($event)' *ngIf="!alerts || alerts?.length != 5">
             <ion-fab-button>
                 <ion-icon name="add"></ion-icon>
             </ion-fab-button>
@@ -34,7 +41,8 @@
                         </section>
                         <section>
                             <div class="example-flex-container">
-                                <button mat-icon-button aria-label="Example icon button with a vertical three dot icon">
+                                <button mat-icon-button aria-label="Example icon button with a vertical three dot icon"
+                                    (click)="editAlert(alert)">
                                     <mat-icon>edit</mat-icon>
                                 </button>
                                 <button mat-icon-button color="primary"

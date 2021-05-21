@@ -37,12 +37,14 @@ export class AlertService {
     }
 
     async editAlert(alert: VaccineAlert): Promise<any> {
-        return await this.getAllAlerts().then(function (data) {
-            if (data) {
-                console.log(data);
-                //this.storageService.remove(this.alertListKey);
+        const alertsDB = await this.getAllAlerts();
+        if (alertsDB) {
+            var index = alertsDB.findIndex(a => a.alert_id == alert.alert_id);
+            if(index != -1){
+                alertsDB[index] = alert;
             }
-        });
+        }
+        this.storageService.setItem(this.alertListKey, JSON.stringify(alertsDB));
     }
 
     async removeAlert(key: string): Promise<void> {

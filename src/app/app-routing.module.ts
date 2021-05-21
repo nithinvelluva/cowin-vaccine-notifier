@@ -21,12 +21,13 @@ const routes: Routes = [
     loadChildren: () => import('./pages/tabs/alert/alert.module').then(m => m.AlertPageModule)
   },
   {
-    path: 'hometab',
-    //runGuardsAndResolvers: 'always',
+    path: 'home',
+    runGuardsAndResolvers: 'always',
     loadChildren: () => import('./pages/tabs/home/home.module').then(m => m.HomePageModule)
   },
   {
     path: 'cowinslot',
+    runGuardsAndResolvers: 'always',
     loadChildren: () => import('./pages/cowinslot/cowinslot.module').then(m => m.CowinslotPageModule)
   }
 ];

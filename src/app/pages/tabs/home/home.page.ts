@@ -14,6 +14,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ConfirmationDialogModel } from 'src/app/models/confirmationdialog';
 import { ConfirmDialogComponent } from '../../alert-dialogs/confirm-dialog/confirm-dialog.component';
 import { AppConstants } from 'src/app/constants/AppConstants';
+import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 
 @Component({
   selector: 'app-home',
@@ -57,9 +58,11 @@ export class HomePage {
     , private alertService: AlertService
     , private snackBar: MatSnackBar
     , private router: Router
-    , public dialog: MatDialog
+    , private dialog: MatDialog
+    , private backgroundMode: BackgroundMode
   ) {
     const currentUrl = this.router.url;
+    //this.getVaccineSchedule();
     this.navigationSubscription = this.router.events.subscribe((e: any) => {
       // If it is a NavigationEnd event re-initalise the component
       if (e instanceof NavigationEnd && e.url == currentUrl) {
@@ -93,7 +96,7 @@ export class HomePage {
     this.vaccineOptions = [...this.vaccineOptions, ...vaccineGroups];
   }
 
-  setDefaults() {    
+  setDefaults() {
     this.preferences.stateId = 0;
     this.preferences.districtId = 0;
     this.preferences.searchCriteria = 1;
@@ -106,26 +109,49 @@ export class HomePage {
 
     this.dialog.closeAll();
     this.buildFilterOptions();
-    
+
     this.cowinService.GetStates().subscribe((data: any) => {
       this.states = data.states;
     });
   }
 
-  getVaccineSchedule(e) {
+  getVaccineSchedule() {
+    this.unsubscribe();
     this.alertService.getAllAlerts().then(async (data: any) => {
       if (data && data.length > 0) {
-        for (let alert of data) {
+        this.backgroundMode.on("activate").subscribe(() => {
+
           this.subscription = interval(10000).subscribe(x => {
-            this.getSchedule();
+            for (let alert of data) {
+              if(alert.params.search_type == 1){
+                this.cowinService.GetCalendarByDistrict(this.preferences.districtId).subscribe((data: any) => {
+                  if (data && data.centers) {
+                    var allCenterSessions = data.centers;
+                    this.parseSessionData();
+                    if (this.availableCenterSessions && this.availableCenterSessions.length > 0 && this.preferences.subscribe) {
+                      this.pushAvailableSessionNotification();
+                    }
+                  }                  
+                });
+              }
+            }            
           });
-        }
+
+        });
+
+        /* this.subscription = interval(10000).subscribe(x => {
+          this.pushAvailableSessionNotification();
+        }); */
       }
     });
   }
 
   ngOnInit(): void {
-    //this.setDefaults();
+    this.setDefaults();
+  }
+
+  ngOnChanges() {
+    this.setDefaults();
   }
 
   ngOnDestroy() {
@@ -154,13 +180,13 @@ export class HomePage {
     this.availableCenterSessions = [];
     if (this.allCenterSessions) {
       var feeFilter = this.filterFeeGroupValue && this.filterFeeGroupValue.length > 0;
-      var centers = feeFilter ? this.allCenterSessions.filter(x => this.constructFeeFilterParams(x, 0, this.allCenterSessions))
+      var centers = feeFilter ? this.allCenterSessions.filter(x => this.constructFeeFilterParams(x))
         : this.allCenterSessions;
 
       centers.forEach((element, i, arr) => {
         var openSessions: Session[] = [];
         var allSessions: Session[] = element.sessions;
-        openSessions = [...openSessions, ...allSessions.filter(x => this.constructFilterParams(x, i, allSessions))];
+        openSessions = [...openSessions, ...allSessions.filter(x => this.constructFilterParams(x))];
         if (openSessions && openSessions.length > 0) {
           this.availableCenterSessions.push(
             <AvailableCenterSessions>{
@@ -263,7 +289,7 @@ export class HomePage {
       let actions = ['Dismiss', 'View Alerts'];
       var alertCount = data ? data && data.length : 0;
       if (alertCount == AppConstants.AlertAllowedLimit) {
-        const dialogData = new ConfirmationDialogModel('Warning', 'You have reached maximum limit of alerts', actions);
+        const dialogData = new ConfirmationDialogModel('Warning', 'You have reached the maximum limit of alerts', actions);
         this.openDialog(dialogData);
       }
       else {
@@ -309,8 +335,7 @@ export class HomePage {
     });
   }
 
-  unsubscribe() {
-    this.preferences.subscribe = false;
+  unsubscribe() {    
     if (this.subscription != null && this.subscription != undefined) {
       this.subscription.unsubscribe();
     }
@@ -336,7 +361,7 @@ export class HomePage {
     this.searchCompleted = true;
   }
 
-  constructFilterParams(element, index, array) {
+  constructFilterParams(element) {
     var optionFilterVal = true;
     var optionVaccineFilterVal = true;
     if (this.filterAgeGroupValue.length > 0) {
@@ -353,7 +378,7 @@ export class HomePage {
     }
     return optionFilterVal && optionVaccineFilterVal;
   }
-  constructFeeFilterParams(element, index, array) {
+  constructFeeFilterParams(element) {
     if (this.filterFeeGroupValue.length == 1) {
       return element[this.filterFeeGroupValue[0].Key] == this.filterFeeGroupValue[0].Value;
     }

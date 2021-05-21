@@ -16,7 +16,7 @@ export class EditAlertComponent implements OnInit {
   states: any[];
   vaccineAlert: VaccineAlert;
   myControl = new FormControl();
-  districts: any[];
+  districts: any[] = [];
 
   constructor(
     public dialogRef: MatDialogRef<EditAlertComponent>,
@@ -27,6 +27,7 @@ export class EditAlertComponent implements OnInit {
     this.actions = data.actions;
     this.states = data.states;
     this.vaccineAlert = data.vaccineAlert ?? new VaccineAlert();
+    if (data.vaccineAlert?.params.state_id) this.getDistricts(this.vaccineAlert.params.state_id);
   }
   ngOnInit(): void {
 

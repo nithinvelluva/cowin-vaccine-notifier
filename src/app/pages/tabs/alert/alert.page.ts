@@ -73,6 +73,15 @@ export class AlertPage implements OnInit {
     }
   }
 
+  editAlert(alert: VaccineAlert): void {
+    if (alert) {
+      this.openManageAlertDialog(alert).afterClosed().subscribe(result => {
+        if (result && result.alert_id) {
+          this.alertService.editAlert(result);
+        }
+      });
+    }
+  }
   openDialog(): MatDialogRef<ConfirmDialogComponent, any> {
     let actions = ['No', 'Yes'];
     const dialogData = new ConfirmationDialogModel('Confirm', 'Are you sure you want to delete the alert?', actions);
@@ -90,7 +99,7 @@ export class AlertPage implements OnInit {
     let modalTitle = alert ? 'Edit Alert' : 'Add Alert';
     const dialogData = new ManageAlertDialogModel(
       modalTitle,
-      'Are you sure you want to delete the alert?',
+      '',
       actions,
       AlertPage.states,
       alert);
@@ -109,14 +118,14 @@ export class AlertPage implements OnInit {
       if (result) {
         let params = <VaccineAlertParams>{
           district_id: result.params.search_type == 2 ? result.params.district_id : null,
-          state_id: result.params.search_type == 2 ? result.params.state_id : null,    
+          state_id: result.params.search_type == 2 ? result.params.state_id : null,
           district: result.params.district,
-          state: result.params.state,    
+          state: result.params.state,
           pincode: result.params.search_type == 1 ? result.params.pincode : null,
-          search_type: result.params.search_type,    
+          search_type: result.params.search_type,
           date: new Date().toString()
         };
-        this.alertService.createAlert(params).then(x => {       
+        this.alertService.createAlert(params).then(x => {
           this.refresh();
         });
       }
