@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { interval, Subscription } from 'rxjs';
 
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
@@ -21,7 +21,7 @@ import { BackgroundMode } from '@ionic-native/background-mode/ngx';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss']
 })
-export class HomePage {
+export class HomePage implements OnInit, OnDestroy {
   states: any[];
   districts: any[];
   preferences = {
@@ -66,7 +66,7 @@ export class HomePage {
     this.navigationSubscription = this.router.events.subscribe((e: any) => {
       // If it is a NavigationEnd event re-initalise the component
       if (e instanceof NavigationEnd && e.url == currentUrl) {
-        this.setDefaults();
+        //this.setDefaults();
       }
     });
   }
@@ -123,7 +123,7 @@ export class HomePage {
 
           this.subscription = interval(10000).subscribe(x => {
             for (let alert of data) {
-              if(alert.params.search_type == 1){
+              if (alert.params.search_type == 1) {
                 this.cowinService.GetCalendarByDistrict(this.preferences.districtId).subscribe((data: any) => {
                   if (data && data.centers) {
                     var allCenterSessions = data.centers;
@@ -131,10 +131,10 @@ export class HomePage {
                     if (this.availableCenterSessions && this.availableCenterSessions.length > 0 && this.preferences.subscribe) {
                       this.pushAvailableSessionNotification();
                     }
-                  }                  
+                  }
                 });
               }
-            }            
+            }
           });
 
         });
@@ -273,6 +273,7 @@ export class HomePage {
   }
 
   getSchedule() {
+    this.resetFilters();
     if (this.preferences.searchCriteria == 2) {
       this.getcalendarByDistrict();
     } else if (this.preferences.searchCriteria == 1) {
@@ -335,7 +336,7 @@ export class HomePage {
     });
   }
 
-  unsubscribe() {    
+  unsubscribe() {
     if (this.subscription != null && this.subscription != undefined) {
       this.subscription.unsubscribe();
     }
@@ -365,13 +366,13 @@ export class HomePage {
     var optionFilterVal = true;
     var optionVaccineFilterVal = true;
     if (this.filterAgeGroupValue.length > 0) {
-      var optionFilterVal = false;
+      optionFilterVal = false;
       for (let filter of this.filterAgeGroupValue) {
         optionFilterVal = optionFilterVal || element[filter.Key] == filter.Value;
       }
     }
     if (this.filterVaccineGroupValue.length > 0) {
-      var optionVaccineFilterVal = false;
+      optionVaccineFilterVal = false;
       for (let filter of this.filterVaccineGroupValue) {
         optionVaccineFilterVal = optionVaccineFilterVal || element[filter.Key] == filter.Value;
       }
@@ -379,15 +380,13 @@ export class HomePage {
     return optionFilterVal && optionVaccineFilterVal;
   }
   constructFeeFilterParams(element) {
-    if (this.filterFeeGroupValue.length == 1) {
-      return element[this.filterFeeGroupValue[0].Key] == this.filterFeeGroupValue[0].Value;
-    }
-    else {
-      var optionFilterVal = false;
+    var optionFilterVal = true;
+    if (this.filterFeeGroupValue.length > 0) {
+      optionFilterVal = false;
       for (let filter of this.filterFeeGroupValue) {
         optionFilterVal = optionFilterVal || element[filter.Key] == filter.Value;
       }
-      return optionFilterVal;
     }
+    return optionFilterVal;
   }
 }
