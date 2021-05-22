@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { VaccineAlert, VaccineAlertParams } from 'src/app/models/vaccinealert';
 import { AlertService } from 'src/app/services/alert.service';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
@@ -8,17 +8,19 @@ import { NavigationEnd, Router } from '@angular/router';
 import { CowinService } from 'src/app/services/cowin.service';
 import { EditAlertComponent } from '../../alert-dialogs/edit-alert/edit-alert.component';
 import { ManageAlertDialogModel } from 'src/app/models/managealertdialog';
+import { faPencilAlt } from '@fortawesome/free-solid-svg-icons'
 
 @Component({
   selector: 'app-alert',
   templateUrl: './alert.page.html',
   styleUrls: ['./alert.page.scss'],
 })
-export class AlertPage implements OnInit {
+export class AlertPage implements OnInit, OnDestroy {
 
   alerts: VaccineAlert[] = [];
   navigationSubscription;
   static states: [] = [];
+  readonly pencilIcon: any;
 
   constructor(
     private router: Router
@@ -26,6 +28,7 @@ export class AlertPage implements OnInit {
     , public dialog: MatDialog
     , private cowinService: CowinService
   ) {
+    this.pencilIcon = faPencilAlt;
     const currentUrl = this.router.url;
     this.navigationSubscription = this.router.events.subscribe((e: any) => {
       // If it is a NavigationEnd event re-initalise the component
@@ -56,7 +59,6 @@ export class AlertPage implements OnInit {
 
   public refresh() {
     this.alertService.getAllAlerts().then(async (data: any) => {
-      console.log(data);
       this.alerts = data;
     });
   }
@@ -77,6 +79,7 @@ export class AlertPage implements OnInit {
     if (alert) {
       this.openManageAlertDialog(alert).afterClosed().subscribe(result => {
         if (result && result.alert_id) {
+          this.dialog.closeAll();
           this.alertService.editAlert(result);
         }
       });
@@ -126,6 +129,7 @@ export class AlertPage implements OnInit {
           date: new Date().toString()
         };
         this.alertService.createAlert(params).then(x => {
+          this.dialog.closeAll();
           this.refresh();
         });
       }
