@@ -19,9 +19,9 @@
           <span class="sc-kEqYlL BHClc">{{ageGroup}}+</span>
         </span>
 
-        &nbsp; &nbsp;<span class="sc-kEqYlL cJWlqu" [ngStyle]="{'color': slots_count > 0 ? 'green' : 'orange' }">
-          {{slots_count > 0 ? slots_count : 'No'}}&nbsp;Slot(s) available
-        </span> &nbsp;
+        &nbsp;<span class="sc-kEqYlL cJWlqu" [ngStyle]="{'color': slots_count >= 5 ? 'green' : 'orange' }">
+          Dose1 :&nbsp;{{capacity_dose1}}&nbsp;|&nbsp;Dose2 :&nbsp;{{capacity_dose2}}
+        </span>
       </div>
 
       <br />
@@ -30,9 +30,10 @@
         <span>Vaccine : {{vaccine_type}}({{fee_type}})</span>
       </div>
 
-      <br *ngIf="slots_count > 0"/>
+      <br *ngIf="slots_count > 0" />
 
-      <div *ngIf="slots_count > 0" dir="col" class="sc-jrsJCI sc-WZYaI kbFzTU WANCN" (click)="openWithInAppBrowser($event)">
+      <div *ngIf="slots_count > 0" dir="col" class="sc-jrsJCI sc-WZYaI kbFzTU WANCN"
+        (click)="openWithInAppBrowser($event)">
         <span color="white-color" class="sc-kEqYlL sc-uxeQQ kSRyvT dWdPpq">
           <span color="white-color" class="sc-kEqYlL sc-biJoGX lkkDQX fIJvfn">Book on CoWIN</span>
         </span>

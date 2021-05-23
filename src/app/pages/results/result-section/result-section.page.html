@@ -1,5 +1,9 @@
 <ng-container *ngIf="showResults">
   <div>
+    <ion-searchbar [(ngModel)]="searchTerm" (ionChange)="setFilteredItems()"></ion-searchbar>
+    <!-- <div  class="spinner-container">
+      <ion-spinner></ion-spinner>
+    </div> -->
     <mat-accordion>
       <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false"
         *ngFor="let weeklyResult of weeklyResults;">
@@ -9,7 +13,7 @@
           </mat-panel-title>
           <mat-panel-description>
             <div>
-              <span class="sc-kEqYlL cJWlqu" [ngStyle]="{'color': weeklyResult.totalSlots > 0 ? 'green' : 'orange' }">
+              <span class="sc-kEqYlL cJWlqu" [ngStyle]="{'color': weeklyResult.totalSlots >= 5 ? 'green' : 'orange' }">
                 <fa-icon icon="hospital"></fa-icon>
                 &nbsp;<span>{{weeklyResult.filteredResults.length}}&nbsp;Center(s)</span>
               </span>
@@ -18,20 +22,14 @@
         </mat-expansion-panel-header>
         <div>
           <span class="sc-kEqYlL cJWlqu">
-            <fa-icon icon="syringe"></fa-icon>&nbsp;<span
-              [ngStyle]="{'color': weeklyResult.totalSlots > 0 ? 'green' : 'orange' }">{{weeklyResult.totalSlots > 0 ?
-              weeklyResult.totalSlots : "No"}}&nbsp;Slot(s)</span>
-          </span>
-          <br />
-          <span class="sc-kEqYlL cJWlqu">
             <fa-icon icon="syringe"></fa-icon>Dose 1 :&nbsp;<span
-              [ngStyle]="{'color': weeklyResult.totalSlotsDose1 > 0 ? 'green' : 'orange' }">{{weeklyResult.totalSlotsDose1
+              [ngStyle]="{'color': weeklyResult.totalSlotsDose1 >= 5 ? 'green' : 'orange' }">{{weeklyResult.totalSlotsDose1
               > 0 ? weeklyResult.totalSlotsDose1 : "No"}}&nbsp;Slot(s)</span>
           </span>
           &nbsp;&nbsp;
           <span class="sc-kEqYlL cJWlqu">
             <fa-icon icon="syringe"></fa-icon>Dose 2 :&nbsp;<span
-              [ngStyle]="{'color': weeklyResult.totalSlotsDose2 > 0 ? 'green' : 'orange' }">{{weeklyResult.totalSlotsDose2
+              [ngStyle]="{'color': weeklyResult.totalSlotsDose2 >= 5 ? 'green' : 'orange' }">{{weeklyResult.totalSlotsDose2
               > 0 ? weeklyResult.totalSlotsDose2 : "No"}}&nbsp;Slot(s)</span>
           </span>
         </div>

@@ -1,14 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { VaccineAlert, VaccineAlertParams } from 'src/app/models/vaccinealert';
-import { AlertService } from 'src/app/services/alert.service';
+import { AlertService } from 'src/app/services/alert/alert.service';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../alert-dialogs/confirm-dialog/confirm-dialog.component';
 import { ConfirmationDialogModel } from 'src/app/models/confirmationdialog';
 import { NavigationEnd, Router } from '@angular/router';
-import { CowinService } from 'src/app/services/cowin.service';
+import { CowinService } from 'src/app/services/cowin/cowin.service';
 import { EditAlertComponent } from '../../alert-dialogs/edit-alert/edit-alert.component';
 import { ManageAlertDialogModel } from 'src/app/models/managealertdialog';
-import { faPencilAlt } from '@fortawesome/free-solid-svg-icons'
+import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-alert',

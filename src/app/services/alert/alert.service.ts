@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { VaccineAlert, VaccineAlertParams } from '../models/vaccinealert';
-import { StorageService } from '../services/storage/storage.service';
+import { VaccineAlert, VaccineAlertParams } from '../../models/vaccinealert';
+import { StorageService } from '../storage/storage.service';
 import { v4 as UUID } from 'uuid';
 
 @Injectable({
