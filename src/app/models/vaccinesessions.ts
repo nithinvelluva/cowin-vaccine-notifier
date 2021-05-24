@@ -40,7 +40,7 @@ export class BaseOption {
 export class FilterGroup extends BaseOption{
     Key: string;
 
-    constructor(id : string, option : string, key : string){
+    constructor(id? : string, option? : string, key? : string){
         super();
         this.Value = id;
         this.Option = option;

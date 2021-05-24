@@ -1,24 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { VaccineAlert, VaccineAlertParams } from 'src/app/models/vaccinealert';
-import { AlertService } from 'src/app/services/alert.service';
+import { AlertService } from 'src/app/services/alert/alert.service';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../alert-dialogs/confirm-dialog/confirm-dialog.component';
 import { ConfirmationDialogModel } from 'src/app/models/confirmationdialog';
 import { NavigationEnd, Router } from '@angular/router';
-import { CowinService } from 'src/app/services/cowin.service';
+import { CowinService } from 'src/app/services/cowin/cowin.service';
 import { EditAlertComponent } from '../../alert-dialogs/edit-alert/edit-alert.component';
 import { ManageAlertDialogModel } from 'src/app/models/managealertdialog';
+import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-alert',
   templateUrl: './alert.page.html',
   styleUrls: ['./alert.page.scss'],
 })
-export class AlertPage implements OnInit {
+export class AlertPage implements OnInit, OnDestroy {
 
   alerts: VaccineAlert[] = [];
   navigationSubscription;
   static states: [] = [];
+  readonly pencilIcon: any;
 
   constructor(
     private router: Router
@@ -26,15 +28,12 @@ export class AlertPage implements OnInit {
     , public dialog: MatDialog
     , private cowinService: CowinService
   ) {
+    this.pencilIcon = faPencilAlt;
     const currentUrl = this.router.url;
     this.navigationSubscription = this.router.events.subscribe((e: any) => {
       // If it is a NavigationEnd event re-initalise the component
       if (e instanceof NavigationEnd && e.url == currentUrl) {
         this.refresh();
-        this.dialog.closeAll();
-        this.cowinService.GetStates().subscribe((data: any) => {
-          AlertPage.states = data.states;
-        });
       }
     });
   }
@@ -55,15 +54,20 @@ export class AlertPage implements OnInit {
   }
 
   public refresh() {
+    this.cowinService.GetStates().subscribe((data: any) => {
+      AlertPage.states = data.states;
+    });
+    this.dialog.closeAll();
     this.alertService.getAllAlerts().then(async (data: any) => {
-      console.log(data);
       this.alerts = data;
     });
   }
 
   removeAlert(alert_id: string): void {
     if (alert_id) {
-      this.openDialog().afterClosed().subscribe(result => {
+      let actions = ['No', 'Yes'];
+      const dialogData = new ConfirmationDialogModel('Confirm', 'Are you sure you want to delete the alert?', actions);
+      this.openDialog(dialogData).afterClosed().subscribe(result => {
         if (result) {
           this.alertService.removeAlert(alert_id).then(x => {
             this.refresh();
@@ -77,14 +81,13 @@ export class AlertPage implements OnInit {
     if (alert) {
       this.openManageAlertDialog(alert).afterClosed().subscribe(result => {
         if (result && result.alert_id) {
+          this.dialog.closeAll();
           this.alertService.editAlert(result);
         }
       });
     }
   }
-  openDialog(): MatDialogRef<ConfirmDialogComponent, any> {
-    let actions = ['No', 'Yes'];
-    const dialogData = new ConfirmationDialogModel('Confirm', 'Are you sure you want to delete the alert?', actions);
+  openDialog(dialogData: ConfirmationDialogModel): MatDialogRef<ConfirmDialogComponent, any> {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = true;
     dialogConfig.data = dialogData;
@@ -126,6 +129,7 @@ export class AlertPage implements OnInit {
           date: new Date().toString()
         };
         this.alertService.createAlert(params).then(x => {
+          this.dialog.closeAll();
           this.refresh();
         });
       }

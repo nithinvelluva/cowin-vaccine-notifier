@@ -12,7 +12,8 @@
                 </span>
             </div>
         </ng-container>
-        <ion-fab vertical="bottom" horizontal="end" slot="fixed" (click)='createAlert($event)' *ngIf="!alerts || alerts?.length != 5">
+        <ion-fab vertical="bottom" horizontal="end" slot="fixed" (click)='createAlert($event)'
+            *ngIf="!alerts || alerts?.length != 5">
             <ion-fab-button>
                 <ion-icon name="add"></ion-icon>
             </ion-fab-button>
@@ -42,13 +43,12 @@
                         <section>
                             <div class="example-flex-container">
                                 <button mat-icon-button aria-label="Example icon button with a vertical three dot icon"
-                                    (click)="editAlert(alert)">
-                                    <mat-icon>edit</mat-icon>
+                                    color="primary" (click)="editAlert(alert)">
+                                    <fa-icon [icon]="pencilIcon"></fa-icon>
                                 </button>
-                                <button mat-icon-button color="primary"
-                                    aria-label="Example icon button with a home icon"
+                                <button mat-icon-button color="danger" aria-label="Example icon button with a home icon"
                                     (click)="removeAlert(alert.alert_id)">
-                                    <mat-icon>delete</mat-icon>
+                                    <fa-icon icon="trash"></fa-icon>
                                 </button>
                             </div>
                         </section>

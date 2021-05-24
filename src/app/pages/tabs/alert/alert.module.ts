@@ -18,11 +18,14 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
+    FontAwesomeModule,
     AlertPageRoutingModule,
     MatFormFieldModule,
     MatInputModule,
