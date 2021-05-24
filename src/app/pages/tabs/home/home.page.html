@@ -11,17 +11,17 @@
         <mat-divider></mat-divider>
         <br />
         <div class="allign-center">
-          <mat-radio-group [(ngModel)]="preferences.searchCriteria" aria-label="Select an option" name="criteriaType"
+          <mat-radio-group [(ngModel)]="preferences.search_type" aria-label="Select an option" name="criteriaType"
             (change)="criteriaTypeChange($event)">
             <mat-radio-button [value]="1">Search By PIN</mat-radio-button>
             <mat-radio-button [value]="2">Search By District</mat-radio-button>
           </mat-radio-group>
         </div>
         <br />
-        <div *ngIf="preferences.searchCriteria == 2" class="allign-center">
+        <div *ngIf="preferences.search_type == 2" class="allign-center">
           <mat-form-field class="example-full-width">
             <mat-label>State</mat-label>
-            <mat-select [(ngModel)]="preferences.stateId" name="state" (selectionChange)="onStateChange($event)">
+            <mat-select [(ngModel)]="preferences.state_id" name="state" (selectionChange)="onStateChange($event)">
               <mat-option [value]="">-- Please Select --</mat-option>
               <mat-option *ngFor="let item of states" [value]="item.state_id">
                 {{item.state_name}}
@@ -34,7 +34,7 @@
 
           <mat-form-field class="example-full-width">
             <mat-label>District</mat-label>
-            <mat-select [(ngModel)]="preferences.districtId" name="district"
+            <mat-select [(ngModel)]="preferences.district_id" name="district"
               (selectionChange)="onDistrictChange($event)">
               <mat-option [value]="">-- Please Select --</mat-option>
               <mat-option *ngFor="let item of districts" [value]="item.district_id">
@@ -45,10 +45,10 @@
           </mat-form-field>
         </div>
 
-        <div *ngIf="preferences.searchCriteria == 1" class="allign-center right-left-padding">
+        <div *ngIf="preferences.search_type == 1" class="allign-center right-left-padding">
           <mat-form-field class="example-intermediate-width">
             <mat-label>PIN</mat-label>
-            <input matInput placeholder="Enter your PIN" [(ngModel)]="preferences.pinNumber" name="PIN" type="number">
+            <input matInput placeholder="Enter your PIN" [(ngModel)]="preferences.pincode" name="PIN" type="number">
           </mat-form-field>
         </div>
 

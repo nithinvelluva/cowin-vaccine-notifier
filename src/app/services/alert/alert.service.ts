@@ -40,7 +40,7 @@ export class AlertService {
         const alertsDB = await this.getAllAlerts();
         if (alertsDB) {
             var index = alertsDB.findIndex(a => a.alert_id == alert.alert_id);
-            if(index != -1){
+            if (index != -1) {
                 alertsDB[index] = alert;
             }
         }
@@ -60,5 +60,23 @@ export class AlertService {
                 }
             }
         });
+    }
+
+    checkAlertDuplicates(data: VaccineAlert[], preferences: VaccineAlertParams, alert_id?: any): boolean {
+        let duplicate = false;
+        if (data && data.length > 0) {
+            if (preferences.search_type == 1) {
+                var alert = alert_id ? data.find(a => a.params.pincode == preferences.pincode && a.alert_id != alert_id)
+                    : data.find(a => a.params.pincode == preferences.pincode);
+                duplicate = alert != null || alert != undefined;
+            }
+            else {
+                var alert = alert_id ? data.find(a => (a.params.state_id == preferences.state_id && a.params.district_id == preferences.district_id
+                    && a.alert_id != alert_id))
+                    : data.find(a => (a.params.state_id == preferences.state_id && a.params.district_id == preferences.district_id));
+                duplicate = alert != null || alert != undefined;
+            }
+        }
+        return duplicate;
     }
 }

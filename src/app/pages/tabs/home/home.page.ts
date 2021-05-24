@@ -22,13 +22,8 @@ import { NotificationService } from 'src/app/services/notification/notification.
 })
 export class HomePage implements OnInit, OnDestroy {
   states: any[];
-  districts: any[];
-  preferences = {
-    stateId: 0,
-    districtId: 0,
-    searchCriteria: 1,
-    pinNumber: ""
-  };
+  districts: any[];  
+  preferences = new VaccineAlertParams();
   not_id = 0;
   preferencesKey: string = 'preferences';
   availableCenterSessions: AvailableCenterSessions[] = [];
@@ -53,7 +48,7 @@ export class HomePage implements OnInit, OnDestroy {
   myControl = new FormControl();
   alerts: VaccineAlert[] = [];
   navigationSubscription;
-  
+
   readonly settingIcon: any;
 
   constructor(
@@ -61,7 +56,7 @@ export class HomePage implements OnInit, OnDestroy {
     , private alertService: AlertService
     , private snackBar: MatSnackBar
     , private router: Router
-    , private dialog: MatDialog    
+    , private dialog: MatDialog
     , private notificationService: NotificationService
   ) {
     this.settingIcon = faSlidersH;
@@ -122,10 +117,10 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   setDefaults() {
-    this.preferences.stateId = 0;
-    this.preferences.districtId = 0;
-    this.preferences.searchCriteria = 1;
-    this.preferences.pinNumber = "";
+    this.preferences.state_id = 0;
+    this.preferences.district_id = 0;
+    this.preferences.search_type = 1;
+    this.preferences.pincode = "";
 
     this.filterAgeGroup = new FilterGroup();
     this.filterFeeGroup = new FilterGroup();
@@ -161,8 +156,8 @@ export class HomePage implements OnInit, OnDestroy {
 
   onStateChange(e) {
     this.searchCompleted = false;
-    this.preferences.districtId = 0;
-    this.getDistricts(this.preferences.stateId);
+    this.preferences.district_id = 0;
+    this.getDistricts(this.preferences.state_id);
   }
   onDistrictChange(e) {
     this.searchCompleted = false;
@@ -198,12 +193,12 @@ export class HomePage implements OnInit, OnDestroy {
         }
       });
     }
-  }  
+  }
 
   getcalendarByDistrict() {
     this.searchInProgress = true;
     this.searchCompleted = false;
-    this.cowinService.GetCalendarByDistrict(this.preferences.districtId).subscribe((data: any) => {
+    this.cowinService.GetCalendarByDistrict(this.preferences.district_id).subscribe((data: any) => {
       if (data && data.centers) {
         this.allCenterSessions = data.centers;
         this.parseSessionData();
@@ -217,7 +212,7 @@ export class HomePage implements OnInit, OnDestroy {
   getcalendarByPincode() {
     this.searchInProgress = true;
     this.searchCompleted = false;
-    this.cowinService.getcalendarByPincode(this.preferences.pinNumber).subscribe((data: any) => {
+    this.cowinService.getcalendarByPincode(this.preferences.pincode).subscribe((data: any) => {
       if (data && data.centers) {
         this.allCenterSessions = data.centers;
         this.parseSessionData();
@@ -230,14 +225,14 @@ export class HomePage implements OnInit, OnDestroy {
 
   subscribeToNotification() {
     let params = <VaccineAlertParams>{
-      district_id: this.preferences.searchCriteria == 2 ? this.preferences.districtId : null,
-      state_id: this.preferences.searchCriteria == 2 ? this.preferences.stateId : null,
+      district_id: this.preferences.search_type == 2 ? this.preferences.district_id : null,
+      state_id: this.preferences.search_type == 2 ? this.preferences.state_id : null,
 
-      district: this.preferences.searchCriteria == 2 ? this.districts.find(d => d.district_id == this.preferences.districtId)?.district_name : null,
-      state: this.preferences.searchCriteria == 2 ? this.states.find(s => s.state_id == this.preferences.stateId)?.state_name : null,
+      district: this.preferences.search_type == 2 ? this.districts.find(d => d.district_id == this.preferences.district_id)?.district_name : null,
+      state: this.preferences.search_type == 2 ? this.states.find(s => s.state_id == this.preferences.state_id)?.state_name : null,
 
-      pincode: this.preferences.searchCriteria == 1 ? this.preferences.pinNumber : null,
-      search_type: this.preferences.searchCriteria,
+      pincode: this.preferences.search_type == 1 ? this.preferences.pincode : null,
+      search_type: this.preferences.search_type,
 
       ageFilterGroupValue: this.filterAgeGroupValue,
       feeFilterGroupValue: this.filterFeeGroupValue,
@@ -261,15 +256,15 @@ export class HomePage implements OnInit, OnDestroy {
 
   getSchedule() {
     this.resetFilters();
-    if (this.preferences.searchCriteria == 2) {
+    if (this.preferences.search_type == 2) {
       this.getcalendarByDistrict();
-    } else if (this.preferences.searchCriteria == 1) {
+    } else if (this.preferences.search_type == 1) {
       this.getcalendarByPincode();
     }
   }
 
   actionDisabled() {
-    return this.preferences.searchCriteria == 1 ? !this.preferences.pinNumber : !(this.preferences.stateId && this.preferences.districtId);
+    return this.preferences.search_type == 1 ? !this.preferences.pincode : !(this.preferences.state_id && this.preferences.district_id);
   }
 
   createAlert() {
@@ -281,7 +276,7 @@ export class HomePage implements OnInit, OnDestroy {
         this.openDialog(dialogData);
       }
       else {
-        if (!this.checkAlertDuplicates(data)) {
+        if (!this.alertService.checkAlertDuplicates(data, this.preferences)) {
           this.subscribeToNotification();
         }
         else {
@@ -292,18 +287,7 @@ export class HomePage implements OnInit, OnDestroy {
     });
   }
 
-  checkAlertDuplicates(data: VaccineAlert[]): boolean {
-    let duplicate = false;
-    if (data && data.length > 0) {
-      if (this.preferences.searchCriteria == 1) {
-        duplicate = data.find(a => a.params.pincode == this.preferences.pinNumber) != null;
-      }
-      else {
-        duplicate = data.find(a => (a.params.state_id == this.preferences.stateId && a.params.district_id == this.preferences.districtId)) != null;
-      }
-    }
-    return duplicate;
-  }
+
 
   openDialog(dialogData: ConfirmationDialogModel): void {
     const dialogConfig = new MatDialogConfig();
@@ -319,6 +303,7 @@ export class HomePage implements OnInit, OnDestroy {
       }
     });
   }
+
   criteriaTypeChange(e) {
     this.searchCompleted = false;
   }
@@ -380,5 +365,5 @@ export class HomePage implements OnInit, OnDestroy {
     this.parseSessionData();
     this.searchCompleted = true;
     this.searchInProgress = false;
-  }  
+  }
 }

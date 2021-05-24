@@ -52,10 +52,13 @@ export class NotificationService {
     return availableCenterSessions;
   }
 
-  pushAvailableSessionNotification() {
+  pushAvailableSessionNotification(preferences: any) {
+    var search_params = preferences.search_type == 1 ? 'Pincode : ' + preferences.pincode : 'State : ' + preferences.state + ',District : ' + preferences.district;
     this.localNotifications.schedule({
       id: ++this.not_id,
-      text: 'Vaccines slot found !! Book your slots in COWIN',
+      text: 'Vaccine slots found based on your preference.' +
+        search_params
+        + '.Book your slots in COWIN',
       sound: 'file://sound.mp3',
       data: { secret: 'key_data' }
     });
@@ -66,7 +69,7 @@ export class NotificationService {
       if (data && data.centers) {
         var response = this.parseSessionData(data.centers, params);
         if (response && response.length > 0) {
-          this.pushAvailableSessionNotification();
+          this.pushAvailableSessionNotification(params);
         }
       }
     });
@@ -77,7 +80,7 @@ export class NotificationService {
       if (data && data.centers) {
         var response = this.parseSessionData(data.centers, params);
         if (response && response.length > 0) {
-          this.pushAvailableSessionNotification();
+          this.pushAvailableSessionNotification(params);
         }
       }
     });
@@ -101,9 +104,17 @@ export class NotificationService {
             }
           });
         });
-        /* this.subscription = interval(10000).subscribe(x => {
-          this.pushAvailableSessionNotification();
-        }); */
+        this.subscription = interval(10000).subscribe(x => {
+          for (let alert of data) {
+            console.log(alert);
+            if (alert.params.search_type == 1) {
+              this.getcalendarByPincode(alert.params);
+            }
+            else {
+              this.getcalendarByDistrict(alert.params);
+            }
+          }
+        });
       }
     });
   }
