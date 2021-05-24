@@ -303,7 +303,6 @@ export class HomePage implements OnInit, OnDestroy {
       }
     });
   }
-
   criteriaTypeChange(e) {
     this.searchCompleted = false;
   }

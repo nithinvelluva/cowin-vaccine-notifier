@@ -43,7 +43,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatButtonToggleModule,
     MatSnackBarModule,
     MatDividerModule,
-    MatExpansionModule
+    MatExpansionModule,    
+    MatDividerModule
   ],
   declarations: [HomePage, ResultSectionPage, SortByPipe]
 })
