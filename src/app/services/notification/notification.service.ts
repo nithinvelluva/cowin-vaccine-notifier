@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { interval, Subscription } from 'rxjs';
+import { AppConstants } from 'src/app/constants/AppConstants';
 import { AvailableCenterSessions, Session } from 'src/app/models/vaccinesessions';
 import { AlertService } from '../alert/alert.service';
 import { CowinService } from '../cowin/cowin.service';
@@ -92,7 +93,7 @@ export class NotificationService {
       if (data && data.length > 0) {
         this.backgroundMode.on("activate").subscribe(() => {
 
-          this.subscription = interval(10000).subscribe(x => {
+          this.subscription = interval(AppConstants.SlotCheckRefreshTime).subscribe(x => {
             for (let alert of data) {
               console.log(alert);
               if (alert.params.search_type == 1) {
@@ -104,7 +105,7 @@ export class NotificationService {
             }
           });
         });
-        this.subscription = interval(10000).subscribe(x => {
+        this.subscription = interval(AppConstants.SlotCheckRefreshTime).subscribe(x => {
           for (let alert of data) {
             console.log(alert);
             if (alert.params.search_type == 1) {
