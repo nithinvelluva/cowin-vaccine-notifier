@@ -1,14 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { VaccineAlert, VaccineAlertParams } from 'src/app/models/vaccinealert';
-import { AlertService } from 'src/app/services/alert.service';
+import { AlertService } from 'src/app/services/alert/alert.service';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../alert-dialogs/confirm-dialog/confirm-dialog.component';
 import { ConfirmationDialogModel } from 'src/app/models/confirmationdialog';
 import { NavigationEnd, Router } from '@angular/router';
-import { CowinService } from 'src/app/services/cowin.service';
+import { CowinService } from 'src/app/services/cowin/cowin.service';
 import { EditAlertComponent } from '../../alert-dialogs/edit-alert/edit-alert.component';
 import { ManageAlertDialogModel } from 'src/app/models/managealertdialog';
-import { faPencilAlt } from '@fortawesome/free-solid-svg-icons'
+import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-alert',
@@ -34,10 +34,6 @@ export class AlertPage implements OnInit, OnDestroy {
       // If it is a NavigationEnd event re-initalise the component
       if (e instanceof NavigationEnd && e.url == currentUrl) {
         this.refresh();
-        this.dialog.closeAll();
-        this.cowinService.GetStates().subscribe((data: any) => {
-          AlertPage.states = data.states;
-        });
       }
     });
   }
@@ -58,6 +54,10 @@ export class AlertPage implements OnInit, OnDestroy {
   }
 
   public refresh() {
+    this.cowinService.GetStates().subscribe((data: any) => {
+      AlertPage.states = data.states;
+    });
+    this.dialog.closeAll();
     this.alertService.getAllAlerts().then(async (data: any) => {
       this.alerts = data;
     });
@@ -65,7 +65,9 @@ export class AlertPage implements OnInit, OnDestroy {
 
   removeAlert(alert_id: string): void {
     if (alert_id) {
-      this.openDialog().afterClosed().subscribe(result => {
+      let actions = ['No', 'Yes'];
+      const dialogData = new ConfirmationDialogModel('Confirm', 'Are you sure you want to delete the alert?', actions);
+      this.openDialog(dialogData).afterClosed().subscribe(result => {
         if (result) {
           this.alertService.removeAlert(alert_id).then(x => {
             this.refresh();
@@ -85,9 +87,7 @@ export class AlertPage implements OnInit, OnDestroy {
       });
     }
   }
-  openDialog(): MatDialogRef<ConfirmDialogComponent, any> {
-    let actions = ['No', 'Yes'];
-    const dialogData = new ConfirmationDialogModel('Confirm', 'Are you sure you want to delete the alert?', actions);
+  openDialog(dialogData: ConfirmationDialogModel): MatDialogRef<ConfirmDialogComponent, any> {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = true;
     dialogConfig.data = dialogData;

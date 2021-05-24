@@ -1,14 +1,6 @@
 <ion-content [fullscreen]="true">
   <ng-container ion-fixed>
-    <mat-card>
-      <mat-card-header class="custom-mat-card-header">
-        <mat-card-title>
-
-        </mat-card-title>
-        <mat-card-subtitle>
-
-        </mat-card-subtitle>
-      </mat-card-header>
+    <mat-card class="custom-mat-card">
       <mat-card-content>
         <div class="cBslim">
           <span class="gDnWjd">
@@ -19,17 +11,17 @@
         <mat-divider></mat-divider>
         <br />
         <div class="allign-center">
-          <mat-radio-group [(ngModel)]="preferences.searchCriteria" aria-label="Select an option" name="criteriaType"
+          <mat-radio-group [(ngModel)]="preferences.search_type" aria-label="Select an option" name="criteriaType"
             (change)="criteriaTypeChange($event)">
             <mat-radio-button [value]="1">Search By PIN</mat-radio-button>
             <mat-radio-button [value]="2">Search By District</mat-radio-button>
           </mat-radio-group>
         </div>
         <br />
-        <div *ngIf="preferences.searchCriteria == 2" class="allign-center">
+        <div *ngIf="preferences.search_type == 2" class="allign-center">
           <mat-form-field class="example-full-width">
             <mat-label>State</mat-label>
-            <mat-select [(ngModel)]="preferences.stateId" name="state" (selectionChange)="onStateChange($event)">
+            <mat-select [(ngModel)]="preferences.state_id" name="state" (selectionChange)="onStateChange($event)">
               <mat-option [value]="">-- Please Select --</mat-option>
               <mat-option *ngFor="let item of states" [value]="item.state_id">
                 {{item.state_name}}
@@ -42,7 +34,7 @@
 
           <mat-form-field class="example-full-width">
             <mat-label>District</mat-label>
-            <mat-select [(ngModel)]="preferences.districtId" name="district"
+            <mat-select [(ngModel)]="preferences.district_id" name="district"
               (selectionChange)="onDistrictChange($event)">
               <mat-option [value]="">-- Please Select --</mat-option>
               <mat-option *ngFor="let item of districts" [value]="item.district_id">
@@ -53,23 +45,48 @@
           </mat-form-field>
         </div>
 
-        <div *ngIf="preferences.searchCriteria == 1" class="allign-center right-left-padding">
+        <div *ngIf="preferences.search_type == 1" class="allign-center right-left-padding">
           <mat-form-field class="example-intermediate-width">
             <mat-label>PIN</mat-label>
-            <input matInput placeholder="Enter your PIN" [(ngModel)]="preferences.pinNumber" name="PIN" type="number">
+            <input matInput placeholder="Enter your PIN" [(ngModel)]="preferences.pincode" name="PIN" type="number">
           </mat-form-field>
         </div>
-        <br />
+
         <div class="allign-center">
           <button mat-raised-button color="primary" (click)="getSchedule($event)" [disabled]="actionDisabled()">Get
             vaccinated &nbsp;<fa-icon icon="syringe"></fa-icon></button>
         </div>
-        <br />
-        <div *ngIf="searchCompleted && hasResults" #filterSection>
-          <div>
+      </mat-card-content>
+    </mat-card>
+  </ng-container>
+  <br />
+  <ng-container>
+    <div class="spinner-container" *ngIf="searchInProgress">
+      <ion-spinner></ion-spinner>
+    </div>
+    <mat-accordion *ngIf="searchCompleted && hasResults">
+      <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false" hideToggle="true"
+        [expanded]="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <strong [ngClass]="{'filter-active' : panelOpenState == true,'filter-inactive' : panelOpenState == false}">
+              <fa-icon icon="filter">
+              </fa-icon>&nbsp;Filters
+            </strong>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div *ngIf="filtersActive()">
+          <button mat-raised-button aria-label="Get notified Btn" color="primary" (click)="clearFilters()">
+            Clear Filters
+            <fa-icon icon="times"></fa-icon>
+          </button>
+        </div>
+        <br *ngIf="filtersActive()" />
+        <div #filterSection class="allign-center">
+          <!--  <div>
             <mat-button-toggle-group [(value)]="filterAgeGroupValue" #group="matButtonToggleGroup" multiple=true
               color="primary" [disabled]="actionDisabled()">
-              <mat-button-toggle *ngFor="let item of ageOptions;" (change)="filterGroupSelectionChanged($event)"
+              <mat-button-toggle *ngFor="let item of ageOptions;" (change)="filterAgeGroupSelectionChanged($event)"
                 [value]="item" class="reduced-line-height">{{item.Option}}</mat-button-toggle>
             </mat-button-toggle-group>
             &nbsp;&nbsp;
@@ -86,32 +103,72 @@
               <mat-button-toggle *ngFor="let item of vaccineOptions;"
                 (change)="filterGroupVaccineSelectionChanged($event)" [value]="item">{{item.Option}}</mat-button-toggle>
             </mat-button-toggle-group>
-          </div>
-        </div>
-
-        <br />
-
-        <div *ngIf="searchCompleted && availableCenterSessions.length == 0">
-          <mat-divider></mat-divider>
-          <br />
+          </div> -->
           <div>
-            <span style="color: #f5222d;">
-              <fa-icon icon="exclamation"></fa-icon>
-              &nbsp;No Slots available
-            </span>
-            &nbsp;&nbsp;
-            <button mat-raised-button aria-label="Get notified Btn" color="primary" (click)="createAlert($event)">
-              Get notified
-              <fa-icon icon="bell"></fa-icon>
-            </button>
-          </div>
-        </div>
+            <mat-form-field class="example-reduced-width">
+              <mat-label>Age</mat-label>
+              <mat-select [(ngModel)]="filterAgeGroup" name="agegroup"
+                (selectionChange)="filterAgeGroupSelectionChanged($event)">
+                <mat-option *ngFor="let item of ageOptions" [value]="item">
+                  {{item.Option}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
 
-      </mat-card-content>
-    </mat-card>
-  </ng-container>
-  <br />
-  <ng-container *ngIf="searchCompleted && availableCenterSessions.length > 0">
-    <app-result-section [results]="availableCenterSessions"></app-result-section>
+            &nbsp;&nbsp;
+            <mat-form-field class="example-half-width">
+              <mat-label>Payment</mat-label>
+              <mat-select [(ngModel)]="filterFeeGroup" name="feetype"
+                (selectionChange)="filterFeeGroupValueSelectionChanged($event)">
+                <mat-option *ngFor="let item of feeOptions" [value]="item">
+                  {{item.Option}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div>
+            <mat-form-field class="example-half-width">
+              <mat-label>Vaccine</mat-label>
+              <mat-select [(value)]="filterVaccineGroupValue"
+                (selectionChange)="filterGroupVaccineSelectionChanged($event)" name="vaccine" multiple>
+                <mat-option *ngFor="let item of vaccineOptions" [value]="item">
+                  {{item.Option}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            &nbsp;&nbsp;
+
+            <mat-form-field class="example-reduced-width">
+              <mat-label>Dose</mat-label>
+              <mat-select [(ngModel)]="filterDoseGroup" name="doseType"
+                (selectionChange)="filterDoseGroupValueSelectionChanged($event)">
+                <mat-option *ngFor="let item of doseOptions" [value]="item">
+                  {{item.Option}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+
+    <br />
+    <div *ngIf="searchCompleted && availableCenterSessions.length == 0" class="allign-center">
+      <span style="color: #f5222d;">
+        <fa-icon icon="exclamation"></fa-icon>
+        &nbsp;No Slots available
+      </span>
+      &nbsp;&nbsp;
+      <button mat-raised-button aria-label="Get notified Btn" color="primary" (click)="createAlert($event)">
+        Get notified
+        <fa-icon icon="bell"></fa-icon>
+      </button>
+    </div>
+    <ng-container *ngIf="searchCompleted && availableCenterSessions.length > 0">
+      <app-result-section [results]="availableCenterSessions"></app-result-section>
+    </ng-container>
   </ng-container>
 </ion-content>

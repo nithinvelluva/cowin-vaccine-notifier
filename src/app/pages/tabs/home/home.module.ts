@@ -13,15 +13,14 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ResultSectionPage } from '../../results/result-section/result-section.page';
 import { SortByPipe } from 'src/app/pipes/sort.pipe';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 @NgModule({
   imports: [
@@ -41,11 +40,11 @@ import { MatDividerModule } from '@angular/material/divider';
     MatButtonModule,
     MatRadioModule,
     MatCardModule,
-    MatSlideToggleModule,
     MatButtonToggleModule,
     MatSnackBarModule,
-    MatAutocompleteModule,
-    MatDividerModule    
+    MatDividerModule,
+    MatExpansionModule,    
+    MatDividerModule
   ],
   declarations: [HomePage, ResultSectionPage, SortByPipe]
 })

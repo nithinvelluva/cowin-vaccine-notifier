@@ -1,7 +1,5 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AvailableCenterSessions } from 'src/app/models/vaccinesessions';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
 
 @Component({
   selector: 'app-result-section',
@@ -9,8 +7,6 @@ import { MatSort } from '@angular/material/sort';
   styleUrls: ['./result-section.page.scss']
 })
 export class ResultSectionPage implements OnInit {
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
   @Input() results: AvailableCenterSessions[] = [];
 
   showResults: boolean;
@@ -24,6 +20,7 @@ export class ResultSectionPage implements OnInit {
 
   readonly column: string = 'TotalSlots';
   isDesc: boolean = true;
+  searchTerm: string;
 
   constructor() { }
 
@@ -38,7 +35,7 @@ export class ResultSectionPage implements OnInit {
       console.log('card results', this.results);
       this.weeklyResults = [];
       for (let date of this.weekDates) {
-        for (let item of this.results) {          
+        for (let item of this.results) {
           var sessions = item.Sessions.filter(x => x.date == date);
           if (sessions && sessions.length == 1) {
             var results = [];
@@ -136,7 +133,7 @@ export class ResultSectionPage implements OnInit {
     var current = new Date();
     var week = new Array();
     // Starting Monday not Sunday
-    current.setDate((current.getDate() - current.getDay() + 1));
+    current.setDate((current.getDate() - current.getDay()));
     for (var i = 0; i < 7; i++) {
       week.push(
         this.getFormatDate(new Date(current))
@@ -144,5 +141,8 @@ export class ResultSectionPage implements OnInit {
       current.setDate(current.getDate() + 1);
     }
     return week;
+  }
+  setFilteredItems() {
+
   }
 }

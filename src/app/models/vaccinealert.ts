@@ -20,7 +20,6 @@ export class VaccineAlertParams {
         this.pincode = null;
         this.state = null;
         this.district = null;
-
     }
     date: string;
     search_type: number;
