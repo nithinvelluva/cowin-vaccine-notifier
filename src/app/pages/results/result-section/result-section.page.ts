@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { AppConstants } from 'src/app/constants/AppConstants';
 import { AvailableCenterSessions } from 'src/app/models/vaccinesessions';
 
 @Component({
@@ -14,9 +15,6 @@ export class ResultSectionPage implements OnInit {
   weekDates: any[] = [];
   weeklyResults: any[] = [];
   currentDate = this.getFormatDate(new Date());
-  readonly totalavailable_capacity: string = 'available_capacity';
-  readonly totalavailable_capacity_dose1: string = 'available_capacity_dose1';
-  readonly totalavailable_capacity_dose2: string = 'available_capacity_dose2';
 
   readonly column: string = 'TotalSlots';
   isDesc: boolean = true;
@@ -43,18 +41,18 @@ export class ResultSectionPage implements OnInit {
               <AvailableCenterSessions>{
                 Center: item.Center,
                 Sessions: sessions,
-                TotalSlots: this.findCenterSlotCount(sessions, this.totalavailable_capacity)
+                TotalSlots: this.findCenterSlotCount(sessions, AppConstants.totalavailable_capacity)
               }
             );
             var dayItem = this.weeklyResults.find(x => this.checkDateSlotsAvailable(x, date));
             if (!dayItem) {
-              var totalSlotsDose1 = this.findTotalSlotCount(results, this.totalavailable_capacity_dose1);
-              var totalSlotsDose2 = this.findTotalSlotCount(results, this.totalavailable_capacity_dose2);
+              var totalSlotsDose1 = this.findTotalSlotCount(results, AppConstants.totalavailable_capacity_dose1);
+              var totalSlotsDose2 = this.findTotalSlotCount(results, AppConstants.totalavailable_capacity_dose2);
               this.weeklyResults.push(
                 {
                   sessionDate: date,
                   filteredResults: results,
-                  totalSlots: this.findTotalSlotCount(results, this.totalavailable_capacity),
+                  totalSlots: this.findTotalSlotCount(results, AppConstants.totalavailable_capacity),
                   totalSlotsDose1: totalSlotsDose1,
                   totalSlotsDose2: totalSlotsDose2
                 }
@@ -62,9 +60,9 @@ export class ResultSectionPage implements OnInit {
             }
             else {
               dayItem.filteredResults = [...dayItem.filteredResults, ...results];
-              dayItem.totalSlotsDose1 = this.findTotalSlotCount(dayItem.filteredResults, this.totalavailable_capacity_dose1);
-              dayItem.totalSlotsDose2 = this.findTotalSlotCount(dayItem.filteredResults, this.totalavailable_capacity_dose2);
-              dayItem.totalSlots = this.findTotalSlotCount(dayItem.filteredResults, this.totalavailable_capacity);
+              dayItem.totalSlotsDose1 = this.findTotalSlotCount(dayItem.filteredResults, AppConstants.totalavailable_capacity_dose1);
+              dayItem.totalSlotsDose2 = this.findTotalSlotCount(dayItem.filteredResults, AppConstants.totalavailable_capacity_dose2);
+              dayItem.totalSlots = this.findTotalSlotCount(dayItem.filteredResults, AppConstants.totalavailable_capacity);
             }
           }
           else if (sessions && sessions.length > 1) {
@@ -74,13 +72,13 @@ export class ResultSectionPage implements OnInit {
                 <AvailableCenterSessions>{
                   Center: item.Center,
                   Sessions: [s],
-                  TotalSlots: this.findCenterSlotCount([s], this.totalavailable_capacity)
+                  TotalSlots: this.findCenterSlotCount([s], AppConstants.totalavailable_capacity)
                 }
               );
               var dayItem = this.weeklyResults.find(x => this.checkDateSlotsAvailable(x, date));
               if (!dayItem) {
-                var totalSlotsDose1 = this.findTotalSlotCount(results, this.totalavailable_capacity_dose1);
-                var totalSlotsDose2 = this.findTotalSlotCount(results, this.totalavailable_capacity_dose2);
+                var totalSlotsDose1 = this.findTotalSlotCount(results, AppConstants.totalavailable_capacity_dose1);
+                var totalSlotsDose2 = this.findTotalSlotCount(results, AppConstants.totalavailable_capacity_dose2);
                 this.weeklyResults.push(
                   {
                     sessionDate: date,
@@ -93,8 +91,8 @@ export class ResultSectionPage implements OnInit {
               }
               else {
                 dayItem.filteredResults = [...dayItem.filteredResults, ...results];
-                dayItem.totalSlotsDose1 = this.findTotalSlotCount(dayItem.filteredResults, this.totalavailable_capacity_dose1);
-                dayItem.totalSlotsDose2 = this.findTotalSlotCount(dayItem.filteredResults, this.totalavailable_capacity_dose2);
+                dayItem.totalSlotsDose1 = this.findTotalSlotCount(dayItem.filteredResults, AppConstants.totalavailable_capacity_dose1);
+                dayItem.totalSlotsDose2 = this.findTotalSlotCount(dayItem.filteredResults, AppConstants.totalavailable_capacity_dose2);
                 dayItem.totalSlots = dayItem.totalSlotsDose1 + dayItem.totalSlotsDose2;
               }
             }

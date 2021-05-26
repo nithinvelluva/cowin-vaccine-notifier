@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { AppConstants } from 'src/app/constants/AppConstants';
 import { ApiEndponits } from '../../constants/ApiEndPonits';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CowinService {
-  readonly totalavailable_capacity: string = 'available_capacity';
 
   constructor(public httpClient: HttpClient) {
 
@@ -41,7 +41,7 @@ export class CowinService {
     var optionFilterVal = true;
     var optionVaccineFilterVal = true;
     var optionDoseFilterVal = true;
-    
+
     if (ageFilters && ageFilters.length > 0) {
       optionFilterVal = false;
       for (let filter of ageFilters) {
@@ -60,7 +60,7 @@ export class CowinService {
         optionDoseFilterVal = optionDoseFilterVal || element[filter.Key] > 0;
       }
     }
-    return element[this.totalavailable_capacity] > 0 && optionDoseFilterVal && optionFilterVal && optionVaccineFilterVal;
+    return element[AppConstants.totalavailable_capacity] > 0 && optionDoseFilterVal && optionFilterVal && optionVaccineFilterVal;
   }
   constructFeeFilterParams(element, filters?) {
     var optionFilterVal = true;

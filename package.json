@@ -30,8 +30,10 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@ionic-native/background-mode": "^5.33.0",
     "@ionic-native/core": "^5.33.0",
+    "@ionic-native/geolocation": "^5.33.0",
     "@ionic-native/in-app-browser": "^5.33.0",
     "@ionic-native/local-notifications": "^5.33.0",
+    "@ionic-native/native-geocoder": "^5.33.0",
     "@ionic-native/native-storage": "^5.33.0",
     "@ionic-native/splash-screen": "^5.33.0",
     "@ionic-native/sqlite": "^5.33.0",
@@ -60,13 +62,16 @@
     "@typescript-eslint/eslint-plugin": "4.16.1",
     "@typescript-eslint/parser": "4.16.1",
     "cordova-android": "^9.1.0",
+    "cordova-plugin-add-swift-support": "^2.0.2",
     "cordova-plugin-background-mode": "^0.7.3",
     "cordova-plugin-badge": "^0.8.8",
     "cordova-plugin-device": "^2.0.2",
+    "cordova-plugin-geolocation": "^4.1.0",
     "cordova-plugin-inappbrowser": "^5.0.0",
     "cordova-plugin-ionic-keyboard": "^2.2.0",
     "cordova-plugin-ionic-webview": "^4.2.1",
     "cordova-plugin-local-notification": "^0.9.0-beta.2",
+    "cordova-plugin-nativegeocoder": "^3.4.1",
     "cordova-plugin-nativestorage": "^2.3.2",
     "cordova-plugin-splashscreen": "^5.0.2",
     "cordova-plugin-statusbar": "^2.4.2",
@@ -103,7 +108,11 @@
       "cordova-plugin-nativestorage": {},
       "cordova-plugin-inappbrowser": {},
       "cordova-sqlite-storage": {},
-      "cordova-plugin-background-mode": {}
+      "cordova-plugin-background-mode": {},
+      "cordova-plugin-geolocation": {
+        "GPS_REQUIRED": "true"
+      },
+      "cordova-plugin-nativegeocoder": {}
     },
     "platforms": [
       "android"

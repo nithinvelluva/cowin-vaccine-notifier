@@ -24,6 +24,8 @@ import { ConfirmDialogComponent } from './pages/alert-dialogs/confirm-dialog/con
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { NativeGeocoder } from '@ionic-native/native-geocoder/ngx';
 
 @NgModule({
   declarations: [
@@ -48,6 +50,8 @@ import { BackgroundMode } from '@ionic-native/background-mode/ngx';
     SplashScreen,
     StatusBar,
     InAppBrowser,
+    Geolocation,
+    NativeGeocoder,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
 })

@@ -2,17 +2,16 @@ import { Injectable } from '@angular/core';
 import { VaccineAlert, VaccineAlertParams } from '../../models/vaccinealert';
 import { StorageService } from '../storage/storage.service';
 import { v4 as UUID } from 'uuid';
+import { AppConstants } from 'src/app/constants/AppConstants';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AlertService {
     constructor(private storageService: StorageService) { }
-    readonly alertListKey = 'cowin_alerts';
-    readonly alertPreferenceKey = 'preference';
 
     async getAllAlerts(): Promise<any> {
-        return await this.storageService.getItem(this.alertListKey);
+        return await this.storageService.getItem(AppConstants.alertListKey);
     }
 
     async getAlert(id: string): Promise<VaccineAlert> {
@@ -33,7 +32,7 @@ export class AlertService {
         if (alertsDB) {
             alerts = [...alertsDB, ...alerts];
         }
-        this.storageService.setItem(this.alertListKey, JSON.stringify(alerts));
+        this.storageService.setItem(AppConstants.alertListKey, JSON.stringify(alerts));
     }
 
     async editAlert(alert: VaccineAlert): Promise<any> {
@@ -44,12 +43,12 @@ export class AlertService {
                 alertsDB[index] = alert;
             }
         }
-        this.storageService.setItem(this.alertListKey, JSON.stringify(alertsDB));
+        this.storageService.setItem(AppConstants.alertListKey, JSON.stringify(alertsDB));
     }
 
     async removeAlert(key: string): Promise<void> {
         let serviceRef = this.storageService;
-        let storageKey = this.alertListKey;
+        let storageKey = AppConstants.alertListKey;
         return await this.getAllAlerts().then(function (data) {
             if (data) {
                 console.log(data);

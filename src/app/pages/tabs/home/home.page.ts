@@ -6,7 +6,7 @@ import { AvailableCenterSessions, FilterGroup, Session } from 'src/app/models/va
 import { CowinService } from 'src/app/services/cowin/cowin.service';
 import { AlertService } from 'src/app/services/alert/alert.service';
 import { VaccineAlert, VaccineAlertParams } from 'src/app/models/vaccinealert';
-import { NavigationEnd, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ConfirmationDialogModel } from 'src/app/models/confirmationdialog';
@@ -14,6 +14,8 @@ import { ConfirmDialogComponent } from '../../alert-dialogs/confirm-dialog/confi
 import { AppConstants } from 'src/app/constants/AppConstants';
 import { faSlidersH } from '@fortawesome/free-solid-svg-icons';
 import { NotificationService } from 'src/app/services/notification/notification.service';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { NativeGeocoder, NativeGeocoderOptions, NativeGeocoderResult } from '@ionic-native/native-geocoder/ngx';
 
 @Component({
   selector: 'app-home',
@@ -22,7 +24,7 @@ import { NotificationService } from 'src/app/services/notification/notification.
 })
 export class HomePage implements OnInit, OnDestroy {
   states: any[];
-  districts: any[];  
+  districts: any[];
   preferences = new VaccineAlertParams();
   not_id = 0;
   preferencesKey: string = 'preferences';
@@ -51,6 +53,20 @@ export class HomePage implements OnInit, OnDestroy {
 
   readonly settingIcon: any;
 
+  // Readable Address
+  address: string;
+
+  // Location coordinates
+  latitude: number;
+  longitude: number;
+  accuracy: number;
+
+  //Geocoder configuration
+  geoencoderOptions: NativeGeocoderOptions = {
+    useLocale: true,
+    maxResults: 5
+  };
+
   constructor(
     private cowinService: CowinService
     , private alertService: AlertService
@@ -58,18 +74,57 @@ export class HomePage implements OnInit, OnDestroy {
     , private router: Router
     , private dialog: MatDialog
     , private notificationService: NotificationService
+    , private geolocation: Geolocation
+    , private nativeGeocoder: NativeGeocoder
   ) {
     this.settingIcon = faSlidersH;
     const currentUrl = this.router.url;
-    this.notificationService.getVaccineSchedule();
-    this.navigationSubscription = this.router.events.subscribe((e: any) => {
-      // If it is a NavigationEnd event re-initalise the component
-      if (e instanceof NavigationEnd && e.url == currentUrl) {
-        //this.setDefaults();
-      }
+    this.getGeolocation();    
+    this.notificationService.getVaccineSchedule();    
+  }
+
+  getGeolocation() {
+    this.geolocation.getCurrentPosition().then((resp) => {
+
+      this.latitude = resp.coords.latitude;
+      this.longitude = resp.coords.longitude;
+      this.accuracy = resp.coords.accuracy;
+
+      this.getGeoencoder(resp.coords.latitude, resp.coords.longitude);
+
+    }).catch((error) => {
+      alert('Error getting location' + JSON.stringify(error));
     });
   }
 
+  //geocoder method to fetch address from coordinates passed as arguments
+  getGeoencoder(latitude, longitude) {
+    this.nativeGeocoder.reverseGeocode(latitude, longitude, this.geoencoderOptions)
+      .then((result: NativeGeocoderResult[]) => {
+        this.address = this.generateAddress(result[0]);
+      })
+      .catch((error: any) => {
+        alert('Error getting location' + JSON.stringify(error));
+      });
+  }
+
+  //Return Comma saperated address
+  generateAddress(addressObj) {
+    let obj = [];
+    let address = "";
+    for (let key in addressObj) {
+      if(key == 'postalCode'){
+        this.preferences.pincode = addressObj[key];
+      }
+      obj.push(addressObj[key]);
+    }
+    obj.reverse();
+    for (let val in obj) {
+      if (obj[val].length)
+        address += obj[val] + ', ';
+    }
+    return address.slice(0, -2);
+  }
   resetFilters() {
     this.filterAgeGroupValue = [];
     this.filterFeeGroupValue = [];

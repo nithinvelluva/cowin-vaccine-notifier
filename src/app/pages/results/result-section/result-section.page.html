@@ -1,7 +1,7 @@
 <ng-container *ngIf="showResults">
   <div>
-    <ion-searchbar [(ngModel)]="searchTerm" (ionChange)="setFilteredItems()"></ion-searchbar>
-    <!-- <div  class="spinner-container">
+    <!-- <ion-searchbar [(ngModel)]="searchTerm" [formControl]="searchControl" (ionChange)="onSearchInput()"></ion-searchbar> -->
+    <!-- <div class="spinner-container" *ngIf="searchInProgress">
       <ion-spinner></ion-spinner>
     </div> -->
     <mat-accordion>
