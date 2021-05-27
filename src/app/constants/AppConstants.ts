@@ -8,4 +8,6 @@ export class AppConstants {
 
     public static alertListKey = 'cowin_alerts';
     public static alertPreferenceKey = 'preference';
+
+    public static cowin_register_url = 'https://selfregistration.cowin.gov.in/';
 }

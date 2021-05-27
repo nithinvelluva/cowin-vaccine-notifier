@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { InAppBrowser, InAppBrowserOptions } from '@ionic-native/in-app-browser/ngx';
+import { AppConstants } from 'src/app/constants/AppConstants';
 
 @Component({
   selector: 'app-result-card',
@@ -32,7 +33,7 @@ export class ResultCardComponent implements OnInit {
 
   }
 
-  ngOnChanges() {    
+  ngOnChanges() {
     this.fee_type = this.card.Center.fee_type;
     var currentDateSession = this.card.Sessions;//.filter(x => x.date == this.getCurrentDate());
     if (currentDateSession && currentDateSession.length > 0) {
@@ -46,7 +47,6 @@ export class ResultCardComponent implements OnInit {
 
   openWithInAppBrowser(e) {
     let target = "_blank";
-    const url = 'https://selfregistration.cowin.gov.in/';
-    this.inAppBrowser.create(url, target, this.options);
+    this.inAppBrowser.create(AppConstants.cowin_register_url, target, this.options);
   }
 }
