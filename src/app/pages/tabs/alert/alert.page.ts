@@ -54,9 +54,11 @@ export class AlertPage implements OnInit, OnDestroy {
   }
 
   public refresh() {
-    this.cowinService.GetStates().subscribe((data: any) => {
-      AlertPage.states = data.states;
-    });
+    if (AlertPage.states.length == 0) {
+      this.cowinService.GetStates().subscribe((data: any) => {
+        AlertPage.states = data.states;
+      });
+    }
     this.dialog.closeAll();
     this.alertService.getAllAlerts().then(async (data: any) => {
       this.alerts = data;

@@ -51,7 +51,6 @@ export class AlertService {
         let storageKey = AppConstants.alertListKey;
         return await this.getAllAlerts().then(function (data) {
             if (data) {
-                console.log(data);
                 var index = data.findIndex(x => x.alert_id == key);
                 if (index != -1) {
                     data.splice(index, 1);
