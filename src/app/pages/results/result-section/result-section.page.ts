@@ -30,7 +30,7 @@ export class ResultSectionPage implements OnInit {
     this.filteredResults = [];
     this.weekDates = this.dates();
     if (this.showResults) {
-      console.log('card results', this.results);
+      //console.log('card results', this.results);
       this.weeklyResults = [];
       for (let date of this.weekDates) {
         for (let item of this.results) {
@@ -99,7 +99,7 @@ export class ResultSectionPage implements OnInit {
           }
         }
       }
-      console.log('weeklyResults', this.weeklyResults);
+      //console.log('weeklyResults', this.weeklyResults);
     }
   }
   findTotalSlotCount(data: any[], capacity_type) {
