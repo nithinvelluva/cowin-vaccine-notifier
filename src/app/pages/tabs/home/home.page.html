@@ -116,23 +116,11 @@
             </mat-form-field>
 
             &nbsp;&nbsp;
-            <mat-form-field class="example-half-width">
+            <mat-form-field class="example-reduced-width">
               <mat-label>Payment</mat-label>
               <mat-select [(ngModel)]="filterFeeGroup" name="feetype"
                 (selectionChange)="filterFeeGroupValueSelectionChanged($event)">
                 <mat-option *ngFor="let item of feeOptions" [value]="item">
-                  {{item.Option}}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-
-          <div>
-            <mat-form-field class="example-half-width">
-              <mat-label>Vaccine</mat-label>
-              <mat-select [(value)]="filterVaccineGroupValue"
-                (selectionChange)="filterGroupVaccineSelectionChanged($event)" name="vaccine" multiple>
-                <mat-option *ngFor="let item of vaccineOptions" [value]="item">
                   {{item.Option}}
                 </mat-option>
               </mat-select>
@@ -149,6 +137,18 @@
                 </mat-option>
               </mat-select>
             </mat-form-field>
+          </div>
+
+          <div>
+            <mat-form-field class="example-half-width">
+              <mat-label>Vaccine</mat-label>
+              <mat-select [(value)]="filterVaccineGroupValue"
+                (selectionChange)="filterGroupVaccineSelectionChanged($event)" name="vaccine" multiple>
+                <mat-option *ngFor="let item of vaccineOptions" [value]="item">
+                  {{item.Option}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>            
           </div>
 
         </div>

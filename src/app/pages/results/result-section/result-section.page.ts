@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AppConstants } from 'src/app/constants/AppConstants';
 import { AvailableCenterSessions } from 'src/app/models/vaccinesessions';
+import { CowinService } from 'src/app/services/cowin/cowin.service';
 
 @Component({
   selector: 'app-result-section',
@@ -14,13 +15,13 @@ export class ResultSectionPage implements OnInit {
   filteredResults: AvailableCenterSessions[] = [];
   weekDates: any[] = [];
   weeklyResults: any[] = [];
-  currentDate = this.getFormatDate(new Date());
+  currentDate = this.cowinService.getFormatDate(new Date());
 
   readonly column: string = 'TotalSlots';
   isDesc: boolean = true;
   searchTerm: string;
 
-  constructor() { }
+  constructor(private cowinService: CowinService) { }
 
   ngOnInit() {
 
@@ -28,7 +29,7 @@ export class ResultSectionPage implements OnInit {
   ngOnChanges() {
     this.showResults = this.results.length > 0;
     this.filteredResults = [];
-    this.weekDates = this.dates();
+    this.weekDates = this.cowinService.getWeekDates();
     if (this.showResults) {
       //console.log('card results', this.results);
       this.weeklyResults = [];
@@ -120,25 +121,6 @@ export class ResultSectionPage implements OnInit {
   }
   checkDateSlotsAvailable(item, date) {
     return item.sessionDate == date;
-  }
-  getFormatDate(date) {
-    var dd = String(date.getDate()).padStart(2, '0');
-    var mm = String(date.getMonth() + 1).padStart(2, '0'); //January is 0!
-    var yyyy = date.getFullYear();
-    return dd + '-' + mm + '-' + yyyy;
-  }
-  dates() {
-    var current = new Date();
-    var week = new Array();
-    // Starting Monday not Sunday
-    current.setDate((current.getDate() - current.getDay()));
-    for (var i = 0; i < 7; i++) {
-      week.push(
-        this.getFormatDate(new Date(current))
-      );
-      current.setDate(current.getDate() + 1);
-    }
-    return week;
   }
   setFilteredItems() {
 

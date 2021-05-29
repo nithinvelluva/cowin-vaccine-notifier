@@ -72,4 +72,22 @@ export class CowinService {
     }
     return optionFilterVal;
   }
+  getFormatDate(date) {
+    var dd = String(date.getDate()).padStart(2, '0');
+    var mm = String(date.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = date.getFullYear();
+    return dd + '-' + mm + '-' + yyyy;
+  }
+  getWeekDates() {
+    var current = new Date();
+    var date = current;
+    var week = new Array();
+    for (var i = 0; i < 7; i++) {
+      date.setDate(current.getDate() + 1);
+      week.push(
+        this.getFormatDate(new Date(date))
+      );
+    }
+    return week;
+  }
 }

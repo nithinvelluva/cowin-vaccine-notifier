@@ -79,8 +79,8 @@ export class HomePage implements OnInit, OnDestroy {
   ) {
     this.settingIcon = faSlidersH;
     const currentUrl = this.router.url;
-    this.getGeolocation();    
-    this.notificationService.getVaccineSchedule();    
+    this.getGeolocation();
+    this.notificationService.getVaccineSchedule();
   }
 
   getGeolocation() {
@@ -113,7 +113,7 @@ export class HomePage implements OnInit, OnDestroy {
     let obj = [];
     let address = "";
     for (let key in addressObj) {
-      if(key == 'postalCode'){
+      if (key == 'postalCode') {
         this.preferences.pincode = addressObj[key];
       }
       obj.push(addressObj[key]);
@@ -251,31 +251,35 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   getcalendarByDistrict() {
-    this.searchInProgress = true;
-    this.searchCompleted = false;
-    this.cowinService.GetCalendarByDistrict(this.preferences.district_id).subscribe((data: any) => {
-      if (data && data.centers) {
-        this.allCenterSessions = data.centers;
-        this.parseSessionData();
-      }
-      this.hasResults = data && data.centers && data.centers.length > 0;
-      this.searchCompleted = true;
-      this.searchInProgress = false;
-    });
+    if (this.preferences.district_id) {
+      this.searchInProgress = true;
+      this.searchCompleted = false;
+      this.cowinService.GetCalendarByDistrict(this.preferences.district_id).subscribe((data: any) => {
+        if (data && data.centers) {
+          this.allCenterSessions = data.centers;
+          this.parseSessionData();
+        }
+        this.hasResults = data && data.centers && data.centers.length > 0;
+        this.searchCompleted = true;
+        this.searchInProgress = false;
+      });
+    }
   }
 
   getcalendarByPincode() {
-    this.searchInProgress = true;
-    this.searchCompleted = false;
-    this.cowinService.getcalendarByPincode(this.preferences.pincode).subscribe((data: any) => {
-      if (data && data.centers) {
-        this.allCenterSessions = data.centers;
-        this.parseSessionData();
-      }
-      this.hasResults = data && data.centers && data.centers.length > 0;
-      this.searchCompleted = true;
-      this.searchInProgress = false;
-    });
+    if (this.preferences.pincode) {
+      this.searchInProgress = true;
+      this.searchCompleted = false;
+      this.cowinService.getcalendarByPincode(this.preferences.pincode).subscribe((data: any) => {
+        if (data && data.centers) {
+          this.allCenterSessions = data.centers;
+          this.parseSessionData();
+        }
+        this.hasResults = data && data.centers && data.centers.length > 0;
+        this.searchCompleted = true;
+        this.searchInProgress = false;
+      });
+    }
   }
 
   subscribeToNotification() {
@@ -360,6 +364,7 @@ export class HomePage implements OnInit, OnDestroy {
   }
   criteriaTypeChange(e) {
     this.searchCompleted = false;
+    this.getSchedule();
   }
 
   /* filterAgeGroupSelectionChanged(e) {
