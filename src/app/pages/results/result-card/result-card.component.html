@@ -20,7 +20,8 @@
         </span>
 
         &nbsp;<span class="sc-kEqYlL cJWlqu" [ngStyle]="{'color': slots_count >= 5 ? 'green' : 'orange' }">
-          Dose1 :&nbsp;{{capacity_dose1}}&nbsp;|&nbsp;Dose2 :&nbsp;{{capacity_dose2}}
+          <span [ngStyle]="{'color': capacity_dose1 >= 5 ? 'green' : 'orange' }">Dose1 :&nbsp;{{capacity_dose1}}</span>&nbsp;|&nbsp;
+          <span [ngStyle]="{'color': capacity_dose2 >= 5 ? 'green' : 'orange' }">Dose2 :&nbsp;{{capacity_dose2}}</span>
         </span>
       </div>
 
