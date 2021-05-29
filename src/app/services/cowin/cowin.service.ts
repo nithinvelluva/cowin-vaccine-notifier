@@ -83,10 +83,10 @@ export class CowinService {
     var date = current;
     var week = new Array();
     for (var i = 0; i < 7; i++) {
-      date.setDate(current.getDate() + 1);
       week.push(
         this.getFormatDate(new Date(date))
       );
+      date.setDate(current.getDate() + 1);
     }
     return week;
   }

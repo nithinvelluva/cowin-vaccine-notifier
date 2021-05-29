@@ -98,6 +98,20 @@ export class ResultSectionPage implements OnInit {
               }
             }
           }
+          else {
+            var dayItem = this.weeklyResults.find(x => this.checkDateSlotsAvailable(x, date));
+            if (!dayItem) {
+              this.weeklyResults.push(
+                {
+                  sessionDate: date,
+                  filteredResults: [],
+                  totalSlots: 0,
+                  totalSlotsDose1: 0,
+                  totalSlotsDose2: 0
+                }
+              );
+            }
+          }
         }
       }
       //console.log('weeklyResults', this.weeklyResults);
