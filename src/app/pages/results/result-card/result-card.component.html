@@ -19,9 +19,9 @@
           <span class="sc-kEqYlL BHClc">{{ageGroup}}+</span>
         </span>
 
-        &nbsp;<span class="sc-kEqYlL cJWlqu" [ngStyle]="{'color': slots_count >= 5 ? 'green' : 'orange' }">
-          <span [ngStyle]="{'color': capacity_dose1 >= 5 ? 'green' : 'orange' }">Dose1 :&nbsp;{{capacity_dose1}}</span>&nbsp;|&nbsp;
-          <span [ngStyle]="{'color': capacity_dose2 >= 5 ? 'green' : 'orange' }">Dose2 :&nbsp;{{capacity_dose2}}</span>
+        &nbsp;<span class="sc-kEqYlL cJWlqu" [ngStyle]="{'color': slots_count >= 5 ? 'green' : slots_count == 0 ? 'red':'orange' }">
+          <span [ngStyle]="{'color': capacity_dose1 >= 5 ? 'green' : capacity_dose1 == 0 ? 'red':'orange' }">Dose1 :&nbsp;{{capacity_dose1}}</span>&nbsp;|&nbsp;
+          <span [ngStyle]="{'color': capacity_dose2 >= 5 ? 'green' : capacity_dose2 == 0 ? 'red':'orange' }">Dose2 :&nbsp;{{capacity_dose2}}</span>
         </span>
       </div>
 

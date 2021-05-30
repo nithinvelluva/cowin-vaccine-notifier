@@ -79,7 +79,7 @@ export class HomePage implements OnInit, OnDestroy {
   ) {
     this.settingIcon = faSlidersH;
     const currentUrl = this.router.url;
-    this.getGeolocation();
+    //this.getGeolocation();
     this.notificationService.getVaccineSchedule();
   }
 

@@ -13,9 +13,11 @@
           </mat-panel-title>
           <mat-panel-description>
             <div>
-              <span class="sc-kEqYlL cJWlqu" [ngStyle]="{'color': weeklyResult.totalSlots >= 5 ? 'green' : 'orange' }">
+              <span class="sc-kEqYlL cJWlqu"
+                [ngStyle]="{'color': weeklyResult.totalSlots >= 5 ? 'green' : weeklyResult.totalSlots == 0 ? 'red':'orange' }">
                 <fa-icon icon="hospital"></fa-icon>
-                &nbsp;<span>{{weeklyResult.filteredResults.length > 0 ? weeklyResult.filteredResults.length : "No"}}&nbsp;Center(s)</span>
+                &nbsp;<span>{{weeklyResult.filteredResults.length > 0 ? weeklyResult.filteredResults.length :
+                  "No"}}&nbsp;Center(s)</span>
               </span>
             </div>
           </mat-panel-description>
@@ -23,13 +25,13 @@
         <div>
           <span class="sc-kEqYlL cJWlqu">
             <fa-icon icon="syringe"></fa-icon>Dose 1 :&nbsp;<span
-              [ngStyle]="{'color': weeklyResult.totalSlotsDose1 >= 5 ? 'green' : 'orange' }">{{weeklyResult.totalSlotsDose1
+              [ngStyle]="{'color': weeklyResult.totalSlotsDose1 >= 5 ? 'green' : weeklyResult.totalSlotsDose1 == 0 ? 'red':'orange' }">{{weeklyResult.totalSlotsDose1
               > 0 ? weeklyResult.totalSlotsDose1 : "No"}}&nbsp;Slot(s)</span>
           </span>
           &nbsp;&nbsp;
           <span class="sc-kEqYlL cJWlqu">
             <fa-icon icon="syringe"></fa-icon>Dose 2 :&nbsp;<span
-              [ngStyle]="{'color': weeklyResult.totalSlotsDose2 >= 5 ? 'green' : 'orange' }">{{weeklyResult.totalSlotsDose2
+              [ngStyle]="{'color': weeklyResult.totalSlotsDose2 >= 5 ? 'green' : weeklyResult.totalSlotsDose2 == 0 ? 'red':'orange' }">{{weeklyResult.totalSlotsDose2
               > 0 ? weeklyResult.totalSlotsDose2 : "No"}}&nbsp;Slot(s)</span>
           </span>
         </div>
