@@ -6,7 +6,7 @@
     </div> -->
     <mat-accordion>
       <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false"
-        *ngFor="let weeklyResult of weeklyResults;" [disabled]="weeklyResult.totalSlots == 0">
+        *ngFor="let weeklyResult of weeklyResults;" [disabled]="weeklyResult.filteredResults.length == 0">
         <mat-expansion-panel-header>
           <mat-panel-title>
             <strong>{{weeklyResult.sessionDate}}</strong>
@@ -15,7 +15,7 @@
             <div>
               <span class="sc-kEqYlL cJWlqu" [ngStyle]="{'color': weeklyResult.totalSlots >= 5 ? 'green' : 'orange' }">
                 <fa-icon icon="hospital"></fa-icon>
-                &nbsp;<span>{{weeklyResult.filteredResults.length}}&nbsp;Center(s)</span>
+                &nbsp;<span>{{weeklyResult.filteredResults.length > 0 ? weeklyResult.filteredResults.length : "No"}}&nbsp;Center(s)</span>
               </span>
             </div>
           </mat-panel-description>

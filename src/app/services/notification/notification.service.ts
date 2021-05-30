@@ -57,7 +57,7 @@ export class NotificationService {
     var search_params = preferences.search_type == 1 ? 'Pincode : ' + preferences.pincode : 'State : ' + preferences.state + ',District : ' + preferences.district;
     this.localNotifications.schedule({
       id: ++this.not_id,
-      text: 'Vaccine slots found based on your preference.' +
+      text: 'Vaccine slots found based on your preferences.' +
         search_params
         + '.Book your slots in COWIN',
       sound: 'file://sound.mp3',
