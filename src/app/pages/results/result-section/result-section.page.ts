@@ -10,6 +10,7 @@ import { CowinService } from 'src/app/services/cowin/cowin.service';
 })
 export class ResultSectionPage implements OnInit {
   @Input() results: AvailableCenterSessions[] = [];
+  @Input() include_empty_slots: boolean = false;
 
   showResults: boolean;
   filteredResults: AvailableCenterSessions[] = [];
@@ -98,7 +99,7 @@ export class ResultSectionPage implements OnInit {
               }
             }
           }
-          else {
+          else if(this.include_empty_slots){
             var dayItem = this.weeklyResults.find(x => this.checkDateSlotsAvailable(x, date));
             if (!dayItem) {
               this.weeklyResults.push(

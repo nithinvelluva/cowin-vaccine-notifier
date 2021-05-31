@@ -140,7 +140,7 @@
           </div>
 
           <div>
-            <mat-form-field class="example-half-width">
+            <mat-form-field class="example-reduced-width">
               <mat-label>Vaccine</mat-label>
               <mat-select [(value)]="filterVaccineGroupValue"
                 (selectionChange)="filterGroupVaccineSelectionChanged($event)" name="vaccine" multiple>
@@ -148,7 +148,9 @@
                   {{item.Option}}
                 </mat-option>
               </mat-select>
-            </mat-form-field>            
+            </mat-form-field> &nbsp;&nbsp;
+            <mat-slide-toggle [(ngModel)]="exclude_empty_slots">Show available slots only.</mat-slide-toggle>
+
           </div>
 
         </div>
@@ -168,7 +170,7 @@
       </button>
     </div>
     <ng-container *ngIf="searchCompleted && availableCenterSessions.length > 0">
-      <app-result-section [results]="availableCenterSessions"></app-result-section>
+      <app-result-section [results]="availableCenterSessions" [include_empty_slots]="!exclude_empty_slots"></app-result-section>
     </ng-container>
   </ng-container>
 </ion-content>

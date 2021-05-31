@@ -21,6 +21,7 @@ import { ResultSectionPage } from '../../results/result-section/result-section.p
 import { SortByPipe } from 'src/app/pipes/sort.pipe';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @NgModule({
   imports: [
@@ -44,7 +45,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatSnackBarModule,
     MatDividerModule,
     MatExpansionModule,    
-    MatDividerModule
+    MatDividerModule,
+    MatSlideToggleModule
   ],
   declarations: [HomePage, ResultSectionPage, SortByPipe]
 })

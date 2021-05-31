@@ -46,7 +46,7 @@ export class HomePage implements OnInit, OnDestroy {
   filterFeeGroup: FilterGroup;
   filterDoseGroup: FilterGroup;
   hasResults: boolean;
-
+  exclude_empty_slots: boolean = true;
   myControl = new FormControl();
   alerts: VaccineAlert[] = [];
   navigationSubscription;
@@ -126,6 +126,7 @@ export class HomePage implements OnInit, OnDestroy {
     return address.slice(0, -2);
   }
   resetFilters() {
+    this.exclude_empty_slots = true;
     this.filterAgeGroupValue = [];
     this.filterFeeGroupValue = [];
     this.filterVaccineGroupValue = [];
@@ -172,6 +173,7 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   setDefaults() {
+    this.exclude_empty_slots = true;
     this.preferences.state_id = 0;
     this.preferences.district_id = 0;
     this.preferences.search_type = 1;
