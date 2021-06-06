@@ -149,7 +149,7 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   buildFilterOptions() {
-    let ageGroups: Array<FilterGroup> = [<FilterGroup>{ Option: "18+", Key: 'min_age_limit', Value: '18' },
+    let ageGroups: Array<FilterGroup> = [<FilterGroup>{ Option: "18+", Key: 'min_age_limit', Value: '18+' },
     <FilterGroup>{ Option: "45+", Key: 'min_age_limit', Value: '45' }];
 
     let vaccineGroups: Array<FilterGroup> = [<FilterGroup>{ Option: "Covishield", Key: 'vaccine', Value: 'COVISHIELD' },

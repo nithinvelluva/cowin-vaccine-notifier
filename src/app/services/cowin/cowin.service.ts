@@ -45,7 +45,12 @@ export class CowinService {
     if (ageFilters && ageFilters.length > 0) {
       optionFilterVal = false;
       for (let filter of ageFilters) {
-        optionFilterVal = optionFilterVal || element[filter.Key] == filter.Value;
+        if (filter.Value == '18+') {
+          optionFilterVal = optionFilterVal || element[filter.Key] == '18' || element[filter.Key] == '40';
+        }
+        else {
+          optionFilterVal = optionFilterVal || element[filter.Key] == filter.Value;
+        }
       }
     }
     if (vaccineFilters && vaccineFilters.length > 0) {
